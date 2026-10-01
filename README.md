@@ -36,6 +36,7 @@ se acopla en lazo cerrado hasta que `/dock_status` reporta `is_docked: true`.
 | Patrick Fabrizio Echevarria Duran | patrick.echevarria.d@gmail.com |
 | Marco Jesus Prado Vasquez | pradovasquezm@gmail.com |
 | Camilo Roger Callupe Menejes | camilo.callupe.m@uni.pe |
+| Viviana Ofelia Ventura Condo | viviana.ventura.c@uni.pe |
 
 ---
 
