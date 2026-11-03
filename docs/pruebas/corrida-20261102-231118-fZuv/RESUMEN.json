@@ -1,0 +1,18 @@
+{
+  "fecha": "2026-11-02T23:11:18",
+  "autorizacion": "Patrick: 'te autorizo nuevamente' (una corrida); confirmo carga fisica de la corrida anterior",
+  "args": "ninguno: defaults de entrega (v_max 0.14, v_fine 0.05, v_dock 0.035, d_floor 0.231, SWEEP activo)",
+  "sha256_dock_lidar_py": "aa0a6cb81cb09286e39f6442480504ab92219902cd25e39dc70eed161aa29a6a",
+  "pose_inicial_pose_check": {"d_m": 0.942, "lateral_mm": 37.6, "rumbo_respecto_normal_deg": -5.95, "head_err_nodo_deg": 5.95},
+  "transiciones_s": {"SEARCH->APPROACH": 1.00, "APPROACH->DOCK": 11.55, "DOCK->WAIT_DOCK": 15.90, "WAIT_DOCK->SWEEP": 18.95, "SWEEP->CONFIRM": 20.76, "CONFIRM->WAIT_DOCK": 21.80, "WAIT_DOCK->SWEEP": 24.85, "SWEEP->CONFIRM (2)": 28.76, "CONFIRM->DONE": 30.80},
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": -1.5, "head_err_deg": 1.3, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "nota": "ya dentro de 0.5 deg (rumbo +1.3): sin pulso"},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.3, "pulso_s": 0.16, "rumbo_tras_pausa_deg": -1.1},
+    {"objetivo": "3/8 +3.0", "rumbo_previo_deg": -1.1, "pulso_s": 0.24, "evento": "true -> CONFIRM; true fugaz, CONFIRM->WAIT_DOCK a 1.04 s"},
+    {"objetivo": "3/8 +3.0 (reanudado)", "intentos": [{"rumbo": 0.9, "pulso_s": 0.12}, {"rumbo": 1.7, "pulso_s": 0.10}], "nota": "agoto 3 intentos en +2.5"},
+    {"objetivo": "4/8 -3.0", "rumbo_previo_deg": 2.5, "pulso_s": 0.32, "evento": "true durante el pulso -> CONFIRM -> DONE"}
+  ],
+  "interpretacion": "Hecho: DONE a 30.8 s con defaults; is_docked seguia true tras la corrida. Hipotesis: zona de contacto en head_err negativo (~-1 a -3 deg), consistente con la corrida 1 (-1.8) y la calibracion manual (~-3). El primer true (rumbo -1.1) fue fugaz; al reanudar, el barrido siguio hacia +3 (lejos del contacto) y perdio ~7 s.",
+  "nota": "Traza al cerrar: RCLError 'publisher's context is invalid' en publish_markers durante el SIGINT (posterior a DONE). Corregido en main(): si rclpy.ok() es False la excepcion se trata como cierre."
+}

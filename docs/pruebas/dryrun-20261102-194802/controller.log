@@ -1,0 +1,44 @@
+[INFO] [launch]: All log files can be found below docs/pruebas/dryrun-20261102-194802/ros/2026-11-02-19-48-02-655890-lab-kalman-453765
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [453804]
+[dock_lidar-1] [0m[INFO] [1793670483.256977910] [dock_lidar]: dock_lidar listo | /scan -> /terraslam_validation/cmd_vel a 20 Hz | v_max 0.08 m/s, w_max 0.40 rad/s, v_fine 0.040, v_dock 0.035 | range_sigma 0.010 m[0m
+[dock_lidar-1] [0m[INFO] [1793670483.257545929] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s[0m
+[dock_lidar-1] [33m[WARN] [1793670483.258147626] [dock_lidar]: dry_run=true: solo se publicaran comandos cero[0m
+[dock_lidar-1] [33m[WARN] [1793670483.282579980] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793670483.382573019] [dock_lidar]: esperando datos: LiDAR ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793670483.482561447] [dock_lidar]: esperando datos: dock_status ausente o antiguo[0m
+[dock_lidar-1] [0m[INFO] [1793670484.232516145] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando[0m
+[dock_lidar-1] [0m[INFO] [1793670485.238297132] [dock_lidar]: [  1.01s] SEARCH -> APPROACH[0m
+[dock_lidar-1] [32m[DEBUG] [1793670485.238878175] [dock_lidar]: d=0.994 e=+6.0mm head=+5.51deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670485.782697811] [dock_lidar]: d=0.994 e=+6.1mm head=+5.51deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670486.283042107] [dock_lidar]: d=0.994 e=+6.1mm head=+5.53deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670486.783147442] [dock_lidar]: d=0.994 e=+6.0mm head=+5.51deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670487.283168318] [dock_lidar]: d=0.994 e=+6.1mm head=+5.54deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670487.833352258] [dock_lidar]: d=0.994 e=+6.1mm head=+5.54deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670488.382872735] [dock_lidar]: d=0.994 e=+6.1mm head=+5.54deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670488.883258332] [dock_lidar]: d=0.994 e=+6.1mm head=+5.53deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670489.433209254] [dock_lidar]: d=0.994 e=+6.0mm head=+5.52deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670489.940889989] [dock_lidar]: d=0.994 e=+6.1mm head=+5.53deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670490.482741974] [dock_lidar]: d=0.994 e=+6.1mm head=+5.55deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670490.983177684] [dock_lidar]: d=0.994 e=+6.2mm head=+5.55deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670491.532608116] [dock_lidar]: d=0.994 e=+6.1mm head=+5.54deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670492.033180170] [dock_lidar]: d=0.994 e=+6.1mm head=+5.55deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670492.582736191] [dock_lidar]: d=0.994 e=+6.0mm head=+5.53deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670493.082801084] [dock_lidar]: d=0.994 e=+6.1mm head=+5.55deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670493.641909144] [dock_lidar]: d=0.994 e=+6.1mm head=+5.55deg L=0.26 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793670494.183124299] [dock_lidar]: d=0.994 e=+6.1mm head=+5.54deg L=0.26 v=0.080[0m
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [dock_lidar-1]: sending signal 'SIGINT' to process[dock_lidar-1]
+[dock_lidar-1] Traceback (most recent call last):
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar", line 33, in <module>
+[dock_lidar-1]     sys.exit(load_entry_point('terraslam_solucion_dock_lidar==1.0.0', 'console_scripts', 'dock_lidar')())
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 1386, in main
+[dock_lidar-1]     node.destroy_node()
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py", line 1685, in destroy_node
+[dock_lidar-1]     self.destroy_publisher(self._publishers[0])
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py", line 1565, in destroy_publisher
+[dock_lidar-1]     publisher.destroy()
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/publisher.py", line 99, in destroy
+[dock_lidar-1]     self.__publisher.destroy_when_not_in_use()
+[dock_lidar-1] KeyboardInterrupt
+[ERROR] [dock_lidar-1]: process has died [pid 453804, exit code -2, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_ka01wd68'].

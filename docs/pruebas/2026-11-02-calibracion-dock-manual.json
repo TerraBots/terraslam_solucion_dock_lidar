@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-11-02",
+  "tipo": "calibracion de solo lectura: robot acoplado a mano por Patrick con el joystick, cargando",
+  "is_docked": "true en 10 de 10 mensajes (10 s)",
+  "medicion_DockDetector_range_sigma_0.01": {
+    "scans": 99, "detecciones": 99,
+    "d_centro_a_pared_m": {"p5": 0.2369, "p50": 0.2373, "p95": 0.2376, "std_mm": 0.19},
+    "lateral_mm": -2.2, "lateral_std_mm": 0.54,
+    "rumbo_deg": 2.61, "rumbo_std_deg": 0.03,
+    "saliente_cajas_mm": 77.9, "residuo_mm": 2.37
+  },
+  "edad_mensajes_pc_menos_sello_s": {"scan_p50": 0.105, "scan_max": 0.112, "odom_p50": 0.030, "dock_status_p50": 0.0},
+  "reloj": "NTP sincronizado; el watchdog scan_timeout_s=0.75 tiene margen de sobra",
+  "comparacion": {
+    "d_floor_actual_m": 0.245,
+    "diferencia_mm": 7.7,
+    "conclusion": "Con d_floor=0.245 el controlador se detiene 7.7 mm ANTES de la posicion acoplada medida; coincide con el sintoma descrito por Patrick (llega bien y se para a pocos cm). Medicion anterior (robot acoplado, distancia filtrada) fue 0.2437 m; esta, con el detector directo, 0.2373 m."
+  },
+  "limite_cajas": "En la geometria del reto el frente circular toca las cajas con d < ~0.225 m (calculado con radio 0.1695 m, cajas a +-0.0875 m que sobresalen 0.08 m)."
+}

@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-11-02T19:15:09.000304-06:00",
+  "pytest": {
+    "result": "64 passed",
+    "elapsed_s": 0.84,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider test/test_docking_safety.py",
+    "dds_initialized": false,
+    "robot_motion": false
+  },
+  "installed_files": {
+    "terraslam_solucion_dock_lidar/dock_lidar.py": {
+      "source_sha256": "4fea98c13946ba56063c051b1b74795fde22f3bf60ea1b05ab39f7d8f0aaf3f8",
+      "installed_sha256": "4fea98c13946ba56063c051b1b74795fde22f3bf60ea1b05ab39f7d8f0aaf3f8",
+      "match": true
+    },
+    "launch/solucion.launch.py": {
+      "source_sha256": "3ce5a2d6d2882c0d7379f5d8524bace94282660bf4b316e3ce734a05ac252fa8",
+      "installed_sha256": "3ce5a2d6d2882c0d7379f5d8524bace94282660bf4b316e3ce734a05ac252fa8",
+      "match": true
+    }
+  },
+  "build_this_resumed_turn": false,
+  "last_physical_trial_result": "unknown_original_temporary_logs_unavailable",
+  "new_physical_trial_this_turn": false
+}

@@ -1,0 +1,21 @@
+[INFO] [1793682416.120853379] [dock_lidar]: dock_lidar listo | /scan -> /terraslam_validation/cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793682416.121250540] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793682416.121624861] [dock_lidar]: dry_run=true: solo se publicaran comandos cero
+[WARN] [1793682416.147503845] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo
+[WARN] [1793682417.797824660] [dock_lidar]: esperando datos: LiDAR ausente o antiguo
+[INFO] [1793682417.897404606] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[INFO] [1793682418.901654836] [dock_lidar]: [  1.00s] SEARCH -> APPROACH
+[DEBUG] [1793682418.902152586] [dock_lidar]: d=0.883 e=+12.7mm head=-7.84deg L=0.22 v=0.140
+[DEBUG] [1793682419.447820265] [dock_lidar]: d=0.882 e=+13.3mm head=-7.69deg L=0.22 v=0.140
+[DEBUG] [1793682419.947990951] [dock_lidar]: d=0.882 e=+13.4mm head=-7.67deg L=0.22 v=0.140
+[DEBUG] [1793682420.497634734] [dock_lidar]: d=0.883 e=+13.4mm head=-7.67deg L=0.22 v=0.140
+[DEBUG] [1793682420.998009661] [dock_lidar]: d=0.882 e=+13.9mm head=-7.54deg L=0.22 v=0.140
+[DEBUG] [1793682421.547689012] [dock_lidar]: d=0.882 e=+13.7mm head=-7.59deg L=0.22 v=0.140
+[DEBUG] [1793682422.047736035] [dock_lidar]: d=0.882 e=+13.7mm head=-7.59deg L=0.22 v=0.140
+[DEBUG] [1793682422.597740354] [dock_lidar]: d=0.882 e=+13.5mm head=-7.63deg L=0.22 v=0.140
+[DEBUG] [1793682423.147620813] [dock_lidar]: d=0.882 e=+13.5mm head=-7.62deg L=0.22 v=0.140
+[DEBUG] [1793682423.647986571] [dock_lidar]: d=0.882 e=+13.5mm head=-7.64deg L=0.22 v=0.140
+[DEBUG] [1793682424.197610179] [dock_lidar]: d=0.882 e=+13.5mm head=-7.63deg L=0.22 v=0.140
+[DEBUG] [1793682424.697825922] [dock_lidar]: d=0.882 e=+13.5mm head=-7.63deg L=0.22 v=0.140
+[DEBUG] [1793682425.247613735] [dock_lidar]: d=0.882 e=+13.4mm head=-7.66deg L=0.22 v=0.140
+[DEBUG] [1793682425.747917584] [dock_lidar]: d=0.882 e=+13.5mm head=-7.64deg L=0.22 v=0.140

@@ -1,0 +1,120 @@
+[INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/corrida-20261102-230721-ZFJy/ros/2026-11-02-23-07-22-921406-lab-kalman-797879
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [797922]
+[dock_lidar-1] [0m[INFO] [1793682443.536668576] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.08 m/s, w_max 0.40 rad/s, v_fine 0.040, v_dock 0.035 | range_sigma 0.010 m[0m
+[dock_lidar-1] [0m[INFO] [1793682443.537046547] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg[0m
+[dock_lidar-1] [33m[WARN] [1793682443.564803693] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793682445.315255626] [dock_lidar]: esperando datos: LiDAR ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793682445.364829768] [dock_lidar]: esperando datos: dock_status ausente o antiguo[0m
+[dock_lidar-1] [0m[INFO] [1793682445.564626533] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando[0m
+[dock_lidar-1] [0m[INFO] [1793682446.569019059] [dock_lidar]: [  1.00s] SEARCH -> APPROACH[0m
+[dock_lidar-1] [32m[DEBUG] [1793682446.569458725] [dock_lidar]: d=0.882 e=+13.4mm head=-7.67deg L=0.22 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793682447.115243958] [dock_lidar]: d=0.880 e=+12.9mm head=-7.71deg L=0.22 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793682447.664980950] [dock_lidar]: d=0.840 e=+7.1mm head=-4.80deg L=0.20 v=0.080[0m
+[dock_lidar-1] [32m[DEBUG] [1793682448.165068161] [dock_lidar]: d=0.804 e=+3.6mm head=-2.67deg L=0.19 v=0.078[0m
+[dock_lidar-1] [32m[DEBUG] [1793682448.715110230] [dock_lidar]: d=0.760 e=+1.0mm head=-1.40deg L=0.17 v=0.047[0m
+[dock_lidar-1] [32m[DEBUG] [1793682449.215241521] [dock_lidar]: d=0.730 e=-0.2mm head=-0.92deg L=0.16 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682449.764809325] [dock_lidar]: d=0.709 e=-0.9mm head=-0.63deg L=0.16 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682450.265247978] [dock_lidar]: d=0.689 e=-1.3mm head=-0.62deg L=0.15 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682450.765272458] [dock_lidar]: d=0.669 e=-1.6mm head=-0.45deg L=0.14 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682451.314894765] [dock_lidar]: d=0.648 e=-1.7mm head=-0.24deg L=0.14 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682451.864861518] [dock_lidar]: d=0.628 e=-2.0mm head=-0.18deg L=0.13 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682452.365245210] [dock_lidar]: d=0.608 e=-2.0mm head=-0.20deg L=0.12 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682452.915151168] [dock_lidar]: d=0.586 e=-1.9mm head=-0.41deg L=0.11 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682453.415334542] [dock_lidar]: d=0.566 e=-2.0mm head=-0.48deg L=0.11 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682453.964915927] [dock_lidar]: d=0.546 e=-2.0mm head=-0.52deg L=0.10 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682454.465245727] [dock_lidar]: d=0.526 e=-1.9mm head=-0.31deg L=0.09 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682455.014930161] [dock_lidar]: d=0.505 e=-1.7mm head=-0.17deg L=0.09 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682455.565338957] [dock_lidar]: d=0.484 e=-1.7mm head=-0.13deg L=0.08 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682456.115252030] [dock_lidar]: d=0.463 e=-1.5mm head=-0.30deg L=0.07 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682456.664944244] [dock_lidar]: d=0.444 e=-1.3mm head=-0.22deg L=0.06 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682457.165243708] [dock_lidar]: d=0.425 e=-1.2mm head=-0.26deg L=0.06 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682457.264935425] [dock_lidar]: distancia final: d_filtro=0.4206 m d_lidar=0.4183 m diferencia=-2.3mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682457.714925390] [dock_lidar]: d=0.401 e=-1.1mm head=-0.33deg L=0.05 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682457.764906847] [dock_lidar]: distancia final: d_filtro=0.4015 m d_lidar=0.3992 m diferencia=-2.3mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682458.215285675] [dock_lidar]: d=0.382 e=-1.1mm head=-0.10deg L=0.05 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682458.314887023] [dock_lidar]: distancia final: d_filtro=0.3797 m d_lidar=0.3778 m diferencia=-1.9mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682458.764898274] [dock_lidar]: d=0.361 e=-1.1mm head=-0.10deg L=0.05 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682458.815336518] [dock_lidar]: distancia final: d_filtro=0.3604 m d_lidar=0.3589 m diferencia=-1.5mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682459.315282760] [dock_lidar]: d=0.340 e=-1.0mm head=-0.08deg L=0.05 v=0.040[0m
+[dock_lidar-1] [32m[DEBUG] [1793682459.365289044] [dock_lidar]: distancia final: d_filtro=0.3389 m d_lidar=0.3379 m diferencia=-1.0mm[0m
+[dock_lidar-1] [0m[INFO] [1793682459.564866166] [dock_lidar]: [ 14.00s] APPROACH -> DOCK[0m
+[dock_lidar-1] [32m[DEBUG] [1793682459.864985446] [dock_lidar]: d=0.319 e=-1.1mm head=+0.13deg L=0.08 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682459.914834946] [dock_lidar]: distancia final: d_filtro=0.3172 m d_lidar=0.3164 m diferencia=-0.8mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682460.364939195] [dock_lidar]: d=0.301 e=-1.2mm head=+0.26deg L=0.14 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682460.415196512] [dock_lidar]: distancia final: d_filtro=0.2999 m d_lidar=0.2993 m diferencia=-0.7mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682460.865242808] [dock_lidar]: d=0.284 e=-1.3mm head=+0.21deg L=0.19 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682460.915191033] [dock_lidar]: distancia final: d_filtro=0.2829 m d_lidar=0.2828 m diferencia=-0.1mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682461.414886834] [dock_lidar]: d=0.273 e=-1.5mm head=+0.43deg L=0.22 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682461.464846142] [dock_lidar]: distancia final: d_filtro=0.2682 m d_lidar=0.2708 m diferencia=+2.7mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682461.914896154] [dock_lidar]: d=0.257 e=-1.5mm head=+0.15deg L=0.27 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682462.014958849] [dock_lidar]: distancia final: d_filtro=0.2507 m d_lidar=0.2555 m diferencia=+4.8mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682462.464929476] [dock_lidar]: d=0.255 e=-1.9mm head=-1.34deg L=0.27 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682462.565012567] [dock_lidar]: distancia final: d_filtro=0.2335 m d_lidar=0.2556 m diferencia=+22.1mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682462.965359965] [dock_lidar]: d=0.256 e=-2.3mm head=-2.24deg L=0.27 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682463.064909600] [dock_lidar]: distancia final: d_filtro=0.2180 m d_lidar=0.2523 m diferencia=+34.3mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682463.515177366] [dock_lidar]: d=0.238 e=-0.0mm head=-2.33deg L=0.33 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682463.614846656] [dock_lidar]: distancia final: d_filtro=0.2546 m d_lidar=0.2464 m diferencia=-8.2mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682464.064944303] [dock_lidar]: d=0.255 e=-0.7mm head=-2.61deg L=0.28 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682464.115235240] [dock_lidar]: distancia final: d_filtro=0.2469 m d_lidar=0.2534 m diferencia=+6.5mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682464.565326593] [dock_lidar]: d=0.254 e=-1.0mm head=-2.77deg L=0.28 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682464.665261933] [dock_lidar]: distancia final: d_filtro=0.2367 m d_lidar=0.2517 m diferencia=+15.0mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.065875484] [dock_lidar]: d=0.242 e=-0.9mm head=-2.23deg L=0.32 v=0.035[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.165522137] [dock_lidar]: distancia final: d_filtro=0.2274 m d_lidar=0.2398 m diferencia=+12.4mm[0m
+[dock_lidar-1] [0m[INFO] [1793682465.414924182] [dock_lidar]: espero dock_status parado: d=0.231 e=-1.2mm head=+2.1deg[0m
+[dock_lidar-1] [0m[INFO] [1793682465.415450069] [dock_lidar]: [ 19.85s] DOCK -> WAIT_DOCK[0m
+[dock_lidar-1] [33m[WARN] [1793682465.465487132] [dock_lidar]: asentamiento bloqueado: presupuesto de asentamiento: 0.0/0.0 mm; pulsos ejecutados=0/0[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.466008730] [dock_lidar]: final WAIT_DOCK: d=0.2305 min=0.2305 m e=-1.3mm head=+2.1deg odom_desde_espera=0.0mm pulsos=0/0 is_docked=False edad_estado=0.94s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.533855922] [dock_lidar]: dock_status recibido: is_docked=False[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.715207107] [dock_lidar]: distancia final: d_filtro=0.2133 m d_lidar=0.2290 m diferencia=+15.7mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682465.965465584] [dock_lidar]: final WAIT_DOCK: d=0.2329 min=0.2288 m e=-1.6mm head=+2.1deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.43s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682466.264936092] [dock_lidar]: distancia final: d_filtro=0.2135 m d_lidar=0.2366 m diferencia=+23.1mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682466.514892016] [dock_lidar]: final WAIT_DOCK: d=0.2366 min=0.2288 m e=-1.5mm head=+2.2deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.98s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682466.522324687] [dock_lidar]: dock_status recibido: is_docked=False[0m
+[dock_lidar-1] [32m[DEBUG] [1793682466.765209098] [dock_lidar]: distancia final: d_filtro=0.2174 m d_lidar=0.2365 m diferencia=+19.1mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682467.065303267] [dock_lidar]: final WAIT_DOCK: d=0.2366 min=0.2288 m e=-1.4mm head=+2.2deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.54s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682467.315325754] [dock_lidar]: distancia final: d_filtro=0.2201 m d_lidar=0.2364 m diferencia=+16.3mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682467.519452045] [dock_lidar]: dock_status recibido: is_docked=False[0m
+[dock_lidar-1] [32m[DEBUG] [1793682467.614872817] [dock_lidar]: final WAIT_DOCK: d=0.2364 min=0.2288 m e=-1.4mm head=+2.2deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.10s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682467.864894064] [dock_lidar]: distancia final: d_filtro=0.2226 m d_lidar=0.2365 m diferencia=+13.9mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682468.114875821] [dock_lidar]: final WAIT_DOCK: d=0.2365 min=0.2288 m e=-1.4mm head=+2.2deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.60s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682468.364866453] [dock_lidar]: distancia final: d_filtro=0.2242 m d_lidar=0.2365 m diferencia=+12.3mm[0m
+[dock_lidar-1] [0m[INFO] [1793682468.465554108] [dock_lidar]: sin contacto en la distancia de acople: barrido de rumbo +-6.0 deg en 8 objetivos | rumbo=+2.2deg[0m
+[dock_lidar-1] [0m[INFO] [1793682468.466184164] [dock_lidar]: [ 22.90s] WAIT_DOCK -> SWEEP[0m
+[dock_lidar-1] [0m[INFO] [1793682468.515362626] [dock_lidar]: barrido 1/8: objetivo +1.5deg rumbo +2.2deg pulso 0.10s (intento 1) d=0.236 e=-1.3mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682468.664865738] [dock_lidar]: final SWEEP: d=0.2365 min=0.2288 m e=-1.3mm head=+2.2deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.13s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682468.914893735] [dock_lidar]: distancia final: d_filtro=0.2254 m d_lidar=0.2364 m diferencia=+11.1mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682469.164878431] [dock_lidar]: final SWEEP: d=0.2365 min=0.2288 m e=-1.2mm head=+1.5deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.63s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682469.464853587] [dock_lidar]: distancia final: d_filtro=0.2266 m d_lidar=0.2371 m diferencia=+10.5mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682469.715217909] [dock_lidar]: final SWEEP: d=0.2370 min=0.2288 m e=-1.2mm head=+1.3deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.19s[0m
+[dock_lidar-1] [0m[INFO] [1793682469.865028844] [dock_lidar]: barrido 2/8: objetivo -1.5deg rumbo +1.3deg pulso 0.17s (intento 1) d=0.237 e=-1.2mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682470.015268933] [dock_lidar]: distancia final: d_filtro=0.2276 m d_lidar=0.2372 m diferencia=+9.6mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682470.265112593] [dock_lidar]: final SWEEP: d=0.2370 min=0.2288 m e=-1.2mm head=+1.3deg odom_desde_espera=15.0mm pulsos=0/0 is_docked=False edad_estado=0.74s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682470.565200443] [dock_lidar]: distancia final: d_filtro=0.2285 m d_lidar=0.2353 m diferencia=+6.8mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682470.765221294] [dock_lidar]: final SWEEP: d=0.2363 min=0.2288 m e=-1.1mm head=-1.9deg odom_desde_espera=14.8mm pulsos=0/0 is_docked=False edad_estado=0.24s[0m
+[dock_lidar-1] [32m[DEBUG] [1793682471.115116260] [dock_lidar]: distancia final: d_filtro=0.2295 m d_lidar=0.2365 m diferencia=+7.0mm[0m
+[dock_lidar-1] [32m[DEBUG] [1793682471.314860326] [dock_lidar]: final SWEEP: d=0.2361 min=0.2288 m e=-1.2mm head=-1.8deg odom_desde_espera=14.8mm pulsos=0/0 is_docked=False edad_estado=0.79s[0m
+[dock_lidar-1] [0m[INFO] [1793682471.315582271] [dock_lidar]: barrido 3/8: objetivo +3.0deg rumbo -1.8deg pulso 0.28s (intento 1) d=0.236 e=-1.2mm[0m
+[dock_lidar-1] [0m[INFO] [1793682471.522763435] [dock_lidar]: is_docked=true recibido durante SWEEP[0m
+[dock_lidar-1] [0m[INFO] [1793682471.523289922] [dock_lidar]: [ 25.96s] SWEEP -> CONFIRM[0m
+[dock_lidar-1] [32m[DEBUG] [1793682472.533175507] [dock_lidar]: dock_status recibido: is_docked=True[0m
+[dock_lidar-1] [32m[DEBUG] [1793682473.528661031] [dock_lidar]: dock_status recibido: is_docked=True[0m
+[dock_lidar-1] [0m[INFO] [1793682473.565075126] [dock_lidar]: [ 28.00s] CONFIRM -> DONE[0m
+[dock_lidar-1] [0m[INFO] [1793682473.565546109] [dock_lidar]: acoplamiento confirmado parado: 3 lecturas, 2.01 s estables[0m
+[dock_lidar-1] Traceback (most recent call last):
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar", line 33, in <module>
+[dock_lidar-1]     sys.exit(load_entry_point('terraslam_solucion_dock_lidar==1.0.0', 'console_scripts', 'dock_lidar')())
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 1505, in main
+[dock_lidar-1]     rclpy.spin(node)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[dock_lidar-1]     executor.spin_once()
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[dock_lidar-1]     self._spin_once_impl(timeout_sec)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 797, in _spin_once_impl
+[dock_lidar-1]     handler, entity, node = self.wait_for_ready_callbacks(timeout_sec=timeout_sec)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 780, in wait_for_ready_callbacks
+[dock_lidar-1]     return next(self._cb_iter)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 681, in _wait_for_ready_callbacks
+[dock_lidar-1]     raise ExternalShutdownException()
+[dock_lidar-1] rclpy.executors.ExternalShutdownException
+[ERROR] [dock_lidar-1]: process has died [pid 797922, exit code 1, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_tqcckb2l'].

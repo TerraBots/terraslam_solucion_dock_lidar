@@ -1,0 +1,23 @@
+{
+  "fecha": "2026-11-02",
+  "corrida": "1 corrida autorizada por Patrick (segundo intento; el primero, corrida-20261102-194657-BbFw, aborto en check_params sin mover el robot)",
+  "codigo_sha256": {"dock_lidar.py": "4fea98c13946ba56063c051b1b74795fde22f3bf60ea1b05ab39f7d8f0aaf3f8", "solucion.launch.py": "3ce5a2d6d2882c0d7379f5d8524bace94282660bf4b316e3ce734a05ac252fa8"},
+  "parametros": "use_sim_time:=false range_sigma:=0.01 v_max:=0.08 v_fine:=0.04 v_dock:=0.035 v_backoff:=0.06 k_w:=1.0 k_i:=0.0 w_max:=0.4 w_search:=0.3 d_fine:=0.80 d_floor:=0.231 seat_min_distance:=0.230 dock_push_s:=0.0 max_dock_retries:=0 max_seat_steps:=0 run_timeout_s:=90.0",
+  "pose_inicial_lidar": {"d_m": 0.994, "lateral_mm": 6.7, "rumbo_deg": 4.19},
+  "transiciones_s": {"SEARCH->APPROACH": 1.01, "APPROACH->DOCK": 15.85, "DOCK->WAIT_DOCK": 22.30, "WAIT_DOCK->STOPPED": 25.35},
+  "llegada_log": "espero dock_status parado: d=0.231 e=-0.9mm head=+1.3deg; durante WAIT_DOCK d paso de 0.2294 (en movimiento) a ~0.2363 (quieto) sin retroceso en odometria: sesgo de ~7 mm en movimiento (latencia ~0.2 s x 0.035 m/s)",
+  "resultado": "FALLO: is_docked=false durante toda la espera y >10 s despues (observador). Sin choques, sin retrocesos.",
+  "pose_final_quieto_lidar": {"d_m": 0.237, "lateral_mm": -0.2, "rumbo_deg": -0.76, "is_docked": false},
+  "prueba_manual_posterior": {
+    "descripcion": "Patrick empujo con el joystick desde la pose final; tuvo que girar un poco",
+    "al_primer_true": {"avance_odom_mm": 8.3, "giro_odom_deg": -5.94, "cambio_pitch_deg": 0.22},
+    "final": {"avance_odom_mm": 9.2, "giro_odom_deg": -4.35},
+    "pose_acoplada_lidar": {"d_m": 0.236, "lateral_mm": -5.7, "rumbo_deg": 3.57, "is_docked": true}
+  },
+  "comparacion_poses_acopladas": [
+    {"origen": "calibracion manual", "d_m": 0.2373, "lateral_mm": -2.2, "rumbo_deg": 2.61, "is_docked": true},
+    {"origen": "tras empuje+giro manual", "d_m": 0.236, "lateral_mm": -5.7, "rumbo_deg": 3.57, "is_docked": true},
+    {"origen": "final de la corrida", "d_m": 0.237, "lateral_mm": -0.2, "rumbo_deg": -0.76, "is_docked": false}
+  ],
+  "conclusion": "La distancia y el lateral al eje de las cajas eran correctos; el contacto no cerro por RUMBO. Las dos poses acopladas tienen rumbo +2.6..+3.6 deg respecto a la normal de las cajas: el dock fisico esta girado ~3 deg (y unos mm) respecto al eje del marcador. La odometria avanzo 8 mm mientras el LiDAR solo 1 mm: ruedas patinando contra el dock, ya habia contacto mecanico. El pitch casi no cambio: se descarta la hipotesis de 'subir la rampa'."
+}

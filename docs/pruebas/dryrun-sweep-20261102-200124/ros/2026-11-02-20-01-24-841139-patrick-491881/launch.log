@@ -1,0 +1,4 @@
+1793671284.8419616 [INFO] [launch]: All log files can be found below docs/pruebas/dryrun-sweep-20261102-200124/ros/2026-11-02-20-01-24-841139-patrick-491881
+1793671284.8420775 [INFO] [launch]: Default logging verbosity is set to INFO
+1793671284.9013295 [INFO] [dock_lidar-1]: process started with pid [491912]
+1793671285.3881896 [ERROR] [dock_lidar-1]: process has died [pid 491912, exit code 1, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_vdzl_s3p'].

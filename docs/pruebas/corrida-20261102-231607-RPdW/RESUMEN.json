@@ -1,0 +1,16 @@
+{
+  "fecha": "2026-11-02T23:16:07",
+  "autorizacion": "Patrick: 'ya lo puse de lado, te autorizo' (una corrida); robot paralelo a la pared, 90 deg respecto al dock",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "e5c05d1757f3992c1d5403289ecf33556b41596616d2bcb4865f73c0cbd01342",
+  "pose_inicial_pose_check": {"d_m": 0.921, "lateral_mm": -377.3, "rumbo_respecto_normal_deg": 93.27, "detecciones": "10/10"},
+  "transiciones_s": {"SEARCH->STAGE": 1.00, "STAGE->APPROACH": 2.16, "APPROACH->DOCK": 14.45, "DOCK->WAIT_DOCK": 19.30, "WAIT_DOCK->SWEEP": 22.35, "SWEEP->CONFIRM": 25.56, "CONFIRM->DONE": 28.55},
+  "llegada_wait_dock": {"d_m": 0.2322, "lateral_mm": 0.3, "head_err_deg": 0.6, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "rumbo_previo_deg": 0.7, "pulso_s": 0.10, "rumbo_tras_pausa_deg": 1.0},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.0, "pulso_s": 0.15, "rumbo_tras_pausa_deg": -0.7},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": -0.7, "pulso_s": 0.10, "evento": "true durante el pulso -> CONFIRM -> DONE"}
+  ],
+  "interpretacion": "Hecho: desde pose lateral a 90 deg y 38 cm del eje, DONE a 28.55 s con defaults, salida limpia (finished cleanly), is_docked true despues. Hipotesis: contacto en head_err ~ -0.7 deg (rumbo quieto previo al pulso). Las cuatro observaciones de contacto (-3 manual, -1.8, -1.1, -0.7) estan en head_err negativo; las llegadas, en +0.6..+2.2.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

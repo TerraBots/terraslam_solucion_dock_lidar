@@ -1,0 +1,11 @@
+[INFO] [1793682539.654641310] [dock_lidar]: dock_lidar listo | /scan -> /terraslam_validation/cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793682539.655045530] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793682539.655442178] [dock_lidar]: dry_run=true: solo se publicaran comandos cero
+[WARN] [1793682539.684578121] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo
+[WARN] [1793682541.434476870] [dock_lidar]: esperando datos: LiDAR ausente o antiguo
+[WARN] [1793682541.484232192] [dock_lidar]: esperando datos: dock_status ausente o antiguo
+[INFO] [1793682541.520183229] [dock_lidar]: is_docked=true recibido durante SEARCH
+[INFO] [1793682541.520615815] [dock_lidar]: [  0.00s] SEARCH -> CONFIRM
+[INFO] [1793682541.534174457] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[INFO] [1793682543.534306965] [dock_lidar]: [  2.00s] CONFIRM -> DONE
+[INFO] [1793682543.534689938] [dock_lidar]: acoplamiento confirmado parado: 3 lecturas, 2.00 s estables

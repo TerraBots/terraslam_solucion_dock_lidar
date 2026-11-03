@@ -1,0 +1,18 @@
+[INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/dryrun-salida-20261102-230858/ros/2026-11-02-23-08-59-112879-lab-kalman-803052
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [803076]
+[dock_lidar-1] [0m[INFO] [1793682539.654641310] [dock_lidar]: dock_lidar listo | /scan -> /terraslam_validation/cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m[0m
+[dock_lidar-1] [0m[INFO] [1793682539.655045530] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg[0m
+[dock_lidar-1] [33m[WARN] [1793682539.655442178] [dock_lidar]: dry_run=true: solo se publicaran comandos cero[0m
+[dock_lidar-1] [33m[WARN] [1793682539.684578121] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793682541.434476870] [dock_lidar]: esperando datos: LiDAR ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793682541.484232192] [dock_lidar]: esperando datos: dock_status ausente o antiguo[0m
+[dock_lidar-1] [0m[INFO] [1793682541.520183229] [dock_lidar]: is_docked=true recibido durante SEARCH[0m
+[dock_lidar-1] [0m[INFO] [1793682541.520615815] [dock_lidar]: [  0.00s] SEARCH -> CONFIRM[0m
+[dock_lidar-1] [0m[INFO] [1793682541.534174457] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando[0m
+[dock_lidar-1] [0m[INFO] [1793682543.534306965] [dock_lidar]: [  2.00s] CONFIRM -> DONE[0m
+[dock_lidar-1] [0m[INFO] [1793682543.534689938] [dock_lidar]: acoplamiento confirmado parado: 3 lecturas, 2.00 s estables[0m
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT) again, ignoring...
+[INFO] [dock_lidar-1]: sending signal 'SIGINT' to process[dock_lidar-1]
+[INFO] [dock_lidar-1]: process has finished cleanly [pid 803076]

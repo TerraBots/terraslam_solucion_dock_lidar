@@ -1,0 +1,29 @@
+[INFO] [launch]: All log files can be found below docs/pruebas/dryrun-sweep-20261102-200124/ros/2026-11-02-20-01-24-841139-patrick-491881
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [491912]
+[dock_lidar-1] 1793671285.318068 [0] dock_lidar: can't open configuration file file:///var/lib/kalman/cyclonedds.xml
+[dock_lidar-1] [31m[ERROR] [1793671285.318107733] [rmw_cyclonedds_cpp]: rmw_create_node: failed to create domain, error Error[0m
+[dock_lidar-1] 
+[dock_lidar-1] >>> [rcutils|error_handling.c:108] rcutils_set_error_state()
+[dock_lidar-1] This error state is being overwritten:
+[dock_lidar-1] 
+[dock_lidar-1]   'error not set, at ./src/rcl/node.c:263'
+[dock_lidar-1] 
+[dock_lidar-1] with this new error message:
+[dock_lidar-1] 
+[dock_lidar-1]   'rcl node's rmw handle is invalid, at ./src/rcl/node.c:415'
+[dock_lidar-1] 
+[dock_lidar-1] rcutils_reset_error() should be called after error handling to avoid this.
+[dock_lidar-1] <<<
+[dock_lidar-1] [31m[ERROR] [1793671285.318156684] [rcl]: Failed to fini publisher for node: 1[0m
+[dock_lidar-1] Traceback (most recent call last):
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar", line 33, in <module>
+[dock_lidar-1]     sys.exit(load_entry_point('terraslam_solucion_dock_lidar==1.0.0', 'console_scripts', 'dock_lidar')())
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 1499, in main
+[dock_lidar-1]     node = DockLidar()
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 506, in __init__
+[dock_lidar-1]     super().__init__('dock_lidar')
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/node.py", line 175, in __init__
+[dock_lidar-1]     self.__node = _rclpy.Node(
+[dock_lidar-1] rclpy._rclpy_pybind11.RCLError: error creating node: rcl node's rmw handle is invalid, at ./src/rcl/node.c:415
+[ERROR] [dock_lidar-1]: process has died [pid 491912, exit code 1, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_vdzl_s3p'].

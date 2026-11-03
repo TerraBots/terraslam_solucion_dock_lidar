@@ -1,0 +1,216 @@
+{
+  "mode": "read_only_no_command_publisher",
+  "dock_status": [
+    {
+      "t": 1.376,
+      "is_docked": false
+    },
+    {
+      "t": 2.37,
+      "is_docked": false
+    },
+    {
+      "t": 3.37,
+      "is_docked": false
+    },
+    {
+      "t": 4.369,
+      "is_docked": false
+    },
+    {
+      "t": 5.371,
+      "is_docked": false
+    }
+  ],
+  "scan_count": 49,
+  "odom_count": 89,
+  "cmd_count": 33,
+  "cmd_nonzero_count": 25,
+  "last_velocity": {
+    "v": 0.0,
+    "w": 0.0
+  },
+  "scan_frame": "rplidar_link",
+  "scan_rays": 720,
+  "elapsed_s": 6.009,
+  "nodes": [
+    "_ros2cli_260",
+    "_ros2cli_265",
+    "_ros2cli_daemon_0_090c78c6c1484a59a912a6bf764bb43a",
+    "_ros2cli_daemon_0_d60afb78d1764b01a8c973f9b457fa18",
+    "joint_state_publisher",
+    "kalman_create_monitor",
+    "robot_state_publisher",
+    "rosapi",
+    "rosapi_params",
+    "rosbridge_websocket",
+    "rplidar_composition",
+    "rviz",
+    "terraslam_readonly_documentation",
+    "transform_listener_impl_55b502a6b6d0",
+    "zenoh_bridge_ros2dds_rpi"
+  ],
+  "cmd_publishers": [
+    {
+      "node": "rosbridge_websocket",
+      "namespace": "/"
+    },
+    {
+      "node": "zenoh_bridge_ros2dds_rpi",
+      "namespace": "/"
+    }
+  ],
+  "topics": [
+    {
+      "name": "/_rosbridge_keepalive",
+      "types": [
+        "std_msgs/msg/Bool"
+      ]
+    },
+    {
+      "name": "/battery_state",
+      "types": [
+        "sensor_msgs/msg/BatteryState"
+      ]
+    },
+    {
+      "name": "/clicked_point",
+      "types": [
+        "geometry_msgs/msg/PointStamped"
+      ]
+    },
+    {
+      "name": "/client_count",
+      "types": [
+        "std_msgs/msg/Int32"
+      ]
+    },
+    {
+      "name": "/cmd_vel",
+      "types": [
+        "geometry_msgs/msg/Twist"
+      ]
+    },
+    {
+      "name": "/connected_clients",
+      "types": [
+        "rosbridge_msgs/msg/ConnectedClients"
+      ]
+    },
+    {
+      "name": "/dock/_action/feedback",
+      "types": [
+        "irobot_create_msgs/action/Dock_FeedbackMessage"
+      ]
+    },
+    {
+      "name": "/dock/_action/status",
+      "types": [
+        "action_msgs/msg/GoalStatusArray"
+      ]
+    },
+    {
+      "name": "/dock_status",
+      "types": [
+        "irobot_create_msgs/msg/DockStatus"
+      ]
+    },
+    {
+      "name": "/goal_pose",
+      "types": [
+        "geometry_msgs/msg/PoseStamped"
+      ]
+    },
+    {
+      "name": "/imu",
+      "types": [
+        "sensor_msgs/msg/Imu"
+      ]
+    },
+    {
+      "name": "/initialpose",
+      "types": [
+        "geometry_msgs/msg/PoseWithCovarianceStamped"
+      ]
+    },
+    {
+      "name": "/ir_opcode",
+      "types": [
+        "irobot_create_msgs/msg/IrOpcode"
+      ]
+    },
+    {
+      "name": "/joint_states",
+      "types": [
+        "sensor_msgs/msg/JointState"
+      ]
+    },
+    {
+      "name": "/odom",
+      "types": [
+        "nav_msgs/msg/Odometry"
+      ]
+    },
+    {
+      "name": "/parameter_events",
+      "types": [
+        "rcl_interfaces/msg/ParameterEvent"
+      ]
+    },
+    {
+      "name": "/robot_description",
+      "types": [
+        "std_msgs/msg/String"
+      ]
+    },
+    {
+      "name": "/robot_state/transition_event",
+      "types": [
+        "lifecycle_msgs/msg/TransitionEvent"
+      ]
+    },
+    {
+      "name": "/rosout",
+      "types": [
+        "rcl_interfaces/msg/Log"
+      ]
+    },
+    {
+      "name": "/scan",
+      "types": [
+        "sensor_msgs/msg/LaserScan"
+      ]
+    },
+    {
+      "name": "/static_transform/transition_event",
+      "types": [
+        "lifecycle_msgs/msg/TransitionEvent"
+      ]
+    },
+    {
+      "name": "/tf",
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    },
+    {
+      "name": "/tf_static",
+      "types": [
+        "tf2_msgs/msg/TFMessage"
+      ]
+    },
+    {
+      "name": "/undock/_action/feedback",
+      "types": [
+        "irobot_create_msgs/action/Undock_FeedbackMessage"
+      ]
+    },
+    {
+      "name": "/undock/_action/status",
+      "types": [
+        "action_msgs/msg/GoalStatusArray"
+      ]
+    }
+  ],
+  "captured_at": "2026-11-02T19:15:08.999641-06:00"
+}

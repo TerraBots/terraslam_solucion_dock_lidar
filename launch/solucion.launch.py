@@ -2,9 +2,8 @@
 
     ros2 launch terraslam_solucion_dock_lidar solucion.launch.py
 
-Se lanza con el escenario del reto ya corriendo en otra terminal. Los valores
-por defecto son los validados en simulacion (20/20 acoplamientos): para la
-evaluacion no hace falta pasar ningun argumento.
+Un solo nodo. Defaults del RBOT fisico (RPLIDAR A1), basados en la corrida
+exitosa de 0.14/0.05 m/s. Limites absolutos: 0.20 m/s y 0.50 rad/s.
 
 Ver todos los argumentos con su descripcion:
 
@@ -15,12 +14,13 @@ Ejemplos:
     # ver la telemetria del control (d, e, rumbo) cada 0.5 s
     ros2 launch terraslam_solucion_dock_lidar solucion.launch.py log_level:=debug
 
-    # Create 3 real con el RPLIDAR C1
+    # Comprobar percepcion y decisiones SIN mover el robot
     ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \\
-        use_sim_time:=false range_sigma:=0.01
+        dry_run:=true log_level:=debug
 
-    # aproximacion mas agresiva (menos tiempo, algo menos de margen)
-    ros2 launch terraslam_solucion_dock_lidar solucion.launch.py v_max:=0.40 v_fine:=0.07
+    # Simulacion (solo cuando se trabaja con Gazebo)
+    ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \\
+        use_sim_time:=true range_sigma:=0.001
 """
 
 from launch import LaunchDescription
@@ -35,8 +35,10 @@ from launch_ros.parameter_descriptions import ParameterValue
 # coincidir con los de dock_lidar.py.
 PARAMS = [
     # --- Entorno
-    ('use_sim_time', 'true', bool,
-     'Reloj de Gazebo. false en el Create 3 real.'),
+    ('use_sim_time', 'false', bool,
+     'false en el RBOT fisico; true exclusivamente con Gazebo.'),
+    ('dry_run', 'false', bool,
+     'true evalua el control publicando solo comandos cero. No mueve el robot.'),
 
     # --- Interfaces
     ('scan_topic', '/scan', str, 'LaserScan de entrada.'),
@@ -52,39 +54,40 @@ PARAMS = [
      'detiene si no recibe comandos seguido: minimo 5 Hz.'),
 
     # --- Percepcion
-    ('range_sigma', '0.001', float,
+    ('range_sigma', '0.01', float,
      'Ruido del LiDAR [m]; todas las tolerancias del detector escalan con '
-     'el. 0.001 en simulacion, ~0.01 en el RPLIDAR C1 real.'),
+     'el. 0.001 en simulacion, 0.01 como punto de partida del A1 real.'),
     ('max_scan_range', '6.0', float,
      'Ignorar lecturas mas lejanas [m]. Mas lejos las cajas reciben muy '
      'pocos rayos y solo aportan ruido.'),
 
     # --- Velocidades
-    ('v_max', '0.30', float,
-     'Velocidad lineal maxima [m/s]. Limite del Create 3: 0.46 con '
-     'safety_override=full, 0.306 en los otros modos.'),
-    ('w_max', '1.5', float, 'Velocidad angular maxima [rad/s].'),
+    ('v_max', '0.14', float,
+     'Velocidad lineal maxima [m/s]. Se limita siempre a 0.20 por Kalman.'),
+    ('w_max', '0.4', float,
+     'Velocidad angular maxima [rad/s]. Se limita siempre a 0.50 por Kalman.'),
     ('v_fine', '0.05', float,
      'Velocidad en el tramo fino, desde d_fine hasta la rampa [m/s].'),
-    ('v_dock', '0.025', float,
+    ('v_dock', '0.035', float,
      'Velocidad sobre la rampa del dock [m/s]. Rapido = rebote.'),
+    ('v_seat', '0.01', float,
+     'Velocidad de asentamiento recto, limitada a 0.01 m/s.'),
     ('v_backoff', '0.12', float, 'Velocidad de retroceso al reintentar [m/s].'),
-    ('w_search', '0.8', float, 'Velocidad de giro en SEARCH [rad/s].'),
+    ('w_search', '0.3', float, 'Velocidad de giro en SEARCH [rad/s].'),
 
     # --- Ganancias del control de rumbo
-    ('k_w', '3.0', float, 'Ganancia proporcional de rumbo.'),
-    ('k_i', '2.5', float,
+    ('k_w', '1.0', float, 'Ganancia proporcional de rumbo.'),
+    ('k_i', '0.0', float,
      'Ganancia integral de rumbo (solo en el tramo fino): vence la friccion '
      'que deja un error de rumbo residual a baja velocidad.'),
 
     # --- Geometria de la maniobra (distancias a la pared DETECTADA)
-    ('d_fine', '0.60', float, 'Inicio del tramo fino de precision [m].'),
+    ('d_fine', '0.75', float, 'Inicio del tramo fino de precision [m].'),
     ('d_slow', '0.42', float,
      'Desde aqui se exige alineacion; si no, retrocede y reintenta [m].'),
     ('d_dock', '0.33', float, 'Inicio del tramo de rampa a v_dock [m].'),
-    ('d_floor', '0.245', float,
-     'Distancia minima a la pared sin acoplar: mas cerca retrocede [m]. '
-     'Por debajo de ~0.225 el robot toca las cajas.'),
+    ('d_floor', '0.231', float,
+     'Distancia de parada para esperar dock_status, sin retroceso inmediato [m].'),
     ('d_stage', '0.75', float,
      'Distancia del punto de preparacion sobre el eje (STAGE) [m].'),
     ('align_tol_lat', '0.025', float,
@@ -112,12 +115,58 @@ PARAMS = [
     ('bump_escape_s', '0.8', float,
      'Duracion del retroceso recto tras un choque [s].'),
     ('max_bump_retries', '3', int,
-     'Reintentos por choque; despues se ignoran para no quedar en bucle '
-     'si el contacto es legitimo (rampa del dock).'),
+     'Reintentos por choque; despues se detiene hasta relanzar.'),
 
     # --- Final
-    ('dock_push_s', '0.4', float,
-     'Seguir empujando tras is_docked, para asentar los contactos [s].'),
+    ('dock_push_s', '0.0', float,
+     'Obsoleto e ignorado: la confirmacion se realiza parado.'),
+    ('dock_confirm_s', '2.0', float,
+     'Tiempo de true consecutivo y al menos tres mensajes, parado [s].'),
+    ('dock_wait_s', '3.0', float,
+     'Espera parado antes del siguiente pulso de asentamiento [s].'),
+    ('seat_step', '0.003', float,
+     'Avance maximo por pulso final, medido con odom [m].'),
+    ('max_seat_steps', '0', int,
+     'Pulsos finales experimentales (0 a 3), desactivados por defecto en RBOT.'),
+    ('seat_min_distance', '0.230', float,
+     'Distancia minima permitida para seguir asentando [m].'),
+    ('seat_timeout_s', '0.6', float,
+     'Duracion maxima por pulso; tambien se limita por seat_step/v_seat [s].'),
+    ('seat_tol_lat', '0.006', float,
+     'Error lateral maximo para asentar recto [m].'),
+    ('seat_tol_head_deg', '3.0', float,
+     'Error angular maximo para asentar recto [grados].'),
+    ('dock_timeout_s', '12.0', float,
+     'Tiempo maximo avanzando en DOCK antes de esperar parado [s].'),
+
+    # --- Barrido de rumbo en el contacto (estado SWEEP)
+    ('dock_sweep', 'true', bool,
+     'Si llega a la distancia de acople sin is_docked: girar en el sitio por '
+     'pulsos (+-1.5, +-3 ... grados) y parar quieto tras cada uno. En el RBOT '
+     'el dock esta girado ~3 grados respecto a las cajas.'),
+    ('sweep_max_deg', '6.0', float, 'Amplitud maxima del barrido [grados].'),
+    ('sweep_step_deg', '1.5', float, 'Paso entre objetivos del barrido [grados].'),
+    ('sweep_w', '0.3', float,
+     'Giro de cada pulso [rad/s]. >=0.26: por debajo las ruedas no llegan al '
+     'minimo de 0.03 m/s del firmware.'),
+    ('sweep_hold_s', '1.2', float,
+     'Pausa quieto tras cada pulso; dock_status llega a 1 Hz [s].'),
+    ('sweep_tol_lat', '0.02', float,
+     'Error lateral maximo para iniciar el barrido [m].'),
+    ('sweep_timeout_s', '25.0', float, 'Duracion maxima del barrido [s].'),
+    ('max_dock_retries', '2', int,
+     'Reintentos totales, ademas del intento inicial; despues STOPPED.'),
+    ('retry_timeout_s', '12.0', float,
+     'Tiempo maximo de una maniobra de recuperacion [s].'),
+    ('scan_timeout_s', '0.75', float, 'Edad maxima del scan [s].'),
+    ('tf_timeout_s', '0.75', float, 'Edad maxima del TF de odometria [s].'),
+    ('detection_timeout_s', '3.0', float,
+     'Tiempo maximo sin una deteccion aceptada del marcador [s].'),
+    ('dock_status_timeout_s', '2.5', float,
+     'Edad maxima del estado de acoplamiento [s].'),
+    ('startup_timeout_s', '15.0', float,
+     'Espera maxima de LiDAR, TF y dock_status al arrancar [s].'),
+    ('run_timeout_s', '180.0', float, 'Duracion maxima de la corrida [s].'),
 ]
 
 

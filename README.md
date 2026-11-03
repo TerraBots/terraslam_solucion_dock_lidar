@@ -1,11 +1,173 @@
 # terraslam_solucion_dock_lidar — Kalman Dock Challenge (HRFEST 2026)
 
+La [bitácora del RBOT físico](docs/BITACORA_RBOT.md) reúne los cambios,
+parámetros, pruebas, resultados conocidos y pendientes, y la siguiente pose.
+
+**Estado al 2026-11-02 (noche): docking autónomo validado en el RBOT real.**
+Tres corridas físicas seguidas, las tres con `is_docked` confirmado y carga
+verificada por el operador, dos de ellas con el launch **sin argumentos**
+(la configuración de entrega), una desde una pose lateral a 90°. Detalle en
+[Resultados en el RBOT real](#resultados-en-el-rbot-real). El hallazgo clave
+fue que **el dock físico está girado ~3° respecto a las cajas**; el estado
+**SWEEP** lo resuelve sin fijar ningún ángulo. 80 pruebas sin movimiento
+aprobadas.
+
+## Resultados en el RBOT real
+
+Create 3 + RPLIDAR A1 del Kalman Lab, 2026-11-02, conexión remota
+(Husarnet/CycloneDDS). Una corrida por autorización del operador; logs,
+CSV de odometría y `RESUMEN.json` de cada una en [`docs/pruebas/`](docs/pruebas/).
+
+| Corrida | Configuración | Pose de salida (medida por LiDAR) | Llegada al contacto | Resultado |
+|---|---|---|---|---|
+| [1](docs/pruebas/corrida-20261102-230721-ZFJy/RESUMEN.json) | perfil lento (`v_max` 0,08) | 0,88 m · lateral +14 mm · rumbo 11° | 0,2365 m · −1,4 mm · +2,2° | **DONE 28,0 s**, carga ✔ |
+| [2](docs/pruebas/corrida-20261102-231118-fZuv/RESUMEN.json) | **defaults de entrega** | 0,94 m · +38 mm · 6° | 0,236 m · −1,5 mm · +1,3° | **DONE 30,8 s** (con un true fugaz) |
+| [3](docs/pruebas/corrida-20261102-231607-RPdW/RESUMEN.json) | **defaults de entrega** | 0,92 m · **−377 mm · 93°** (paralelo a la pared) | 0,232 m · +0,3 mm · +0,6° | **DONE 28,6 s** |
+
+![Tiempo en cada estado](docs/img/rbot_tiempos.png)
+
+Las tres trayectorias (odometría, expresadas en el marco de la pose final)
+convergen al mismo eje y terminan en el mismo punto. La línea gris
+discontinua es la corrida anterior a SWEEP: llegó a la misma pose al
+milímetro, pero sin contacto.
+
+![Trayectorias reales](docs/img/rbot_trayectorias.png)
+
+Lo que mide el propio nodo con el LiDAR: la distancia baja hasta `d_floor`,
+el error lateral converge a ±2 mm (escala logarítmica: la corrida 3 empieza
+a 38 cm) y el rumbo a ±2° respecto a las cajas.
+
+![Convergencia por LiDAR](docs/img/rbot_aproximacion.png)
+
+**El hallazgo: el dock está girado respecto a las cajas.** El LiDAR no puede
+ver el dock (es demasiado bajo), solo las cajas. Con el robot acoplado a
+mano y cargando, su rumbo queda +2,6…+3,6° respecto a la normal de las cajas.
+El robot llegaba perfecto respecto a las cajas y por eso no hacía contacto.
+
+![Dock girado](docs/img/rbot_dock_girado.png)
+
+**SWEEP en acción.** En las tres corridas llegó sin contacto, esperó 3 s
+quieto y empezó a barrer. El `true` llegó en el segundo o tercer objetivo
+(~3 s de barrido). Las cuatro observaciones de contacto (manual y corridas)
+están en `head_err` −0,7…−3° (zona verde): una hipótesis consistente con el
+dock girado, que el barrido cubre sin necesidad de conocerla. En la corrida 2
+el primer `true` fue fugaz; CONFIRM no lo aceptó y el barrido siguió.
+Después de esa corrida se añadió el retorno al rumbo del último contacto
+(aún no ejercitado en el robot).
+
+![Barrido en el robot](docs/img/rbot_barrido.png)
+
+**Calibración de la distancia final.** El tope anterior estaba 8 mm antes de
+la posición acoplada; el nuevo `d_floor` queda entre la pose acoplada y el
+contacto con las cajas.
+
+![Calibración](docs/img/rbot_calibracion.png)
+
+Las figuras se regeneran desde los logs con `~/sim_ws/dev_tools/rbot/plots.py`
+(fuera del paquete; no usa ROS).
+
+Pendiente de probar en el robot: salida de espaldas al dock (~180°), la otra
+pose lateral y un `true` fugaz con el retorno al contacto.
+
+## RBOT físico: ajuste de la fase final
+
+El launch y el nodo usan ahora la configuración de referencia del RBOT con
+RPLIDAR A1: `use_sim_time=false`, `range_sigma=0.01`, `v_max=0.14`,
+`v_fine=0.05`, `k_w=1.0`, `k_i=0.0`, `w_max=0.4`, `w_search=0.3`,
+`d_fine=0.75`. El límite absoluto en todos los estados es **0.20 m/s y
+0.50 rad/s**, incluido el retroceso. Se conserva el detector geométrico.
+
+En el tramo final, la distancia al muro usa la mediana de los tres planos
+recientes aceptados del LiDAR, transformados a odom y evaluados con la pose
+actual. Así se compensa el movimiento desde cada scan y se evita detenerse
+por el sesgo acumulado de la posición del eje en el Kalman. Lateral y rumbo
+conservan el filtro y la ley de seguimiento existentes. Si faltan planos
+recientes, se detiene. El log compara `d_filtro` y `d_lidar`.
+
+**Calibración física (2026-11-02).** Con el robot acoplado a mano y cargando,
+el centro queda a **0,2373 m** de la pared (σ = 0,19 mm). El tope anterior,
+`d_floor=0.245`, paraba el robot antes del contacto; ahora es **0,231 m**:
+más allá de la posición acoplada y antes de tocar las cajas (~0,225 m). En
+movimiento la distancia por LiDAR se subestima ~7 mm (latencia ≈0,2 s a
+0,035 m/s), así que con 0,231 el robot se detiene, ya quieto, en ≈0,237 m.
+`v_dock` pasó de 0,025 a **0,035 m/s**, por encima del mínimo de 0,03 m/s que
+declara el firmware.
+
+Al llegar alineado a `d_floor`, pasa a **WAIT_DOCK**, publica ceros y
+espera hasta 3 s. Si no llega `is_docked`, el robot está a la distancia de
+contacto (≤ `d_floor` + 1,5 cm) y centrado (lateral ≤ 2 cm), entra en
+**SWEEP**: gira en el sitio hacia rumbos +1,5°, −1,5°, +3°, −3°… hasta ±6°
+respecto a la normal de las cajas. Cada objetivo se alcanza con **pulsos**
+cortos (0,3 rad/s, 0,1–0,5 s) seguidos de **1,2 s quieto**, porque
+`/dock_status` llega a 1 Hz y la latencia de la conexión remota haría pasarse
+a un giro continuo: las decisiones se toman solo con el robot parado. El
+primer `true` detiene el giro y pasa a CONFIRM. Si ese `true` resulta
+fugaz, al reanudar vuelve primero al rumbo en que estaba **quieto** cuando
+llegó (el estado llega con ~0,2 s de retraso), como máximo dos veces. Si agota el barrido (25 s
+como máximo), se aleja del eje o recibe un choque, termina en STOPPED **sin
+retroceder**. `v=0` en todo SWEEP. Desactivable con `dock_sweep:=false`. Los pulsos están desactivados por defecto (`max_seat_steps=0`):
+el RBOT declara `min_speed=0.03 m/s` y los pulsos a 0.01 m/s no están
+validados físicamente. Como opción experimental, **SEAT** permite hasta tres pulsos
+rectos de 3 mm a 0.01 m/s, con esperas entre ellos, sin repetir el retroceso
+largo hasta 0.62 m. El avance se limita por odometría y por tiempo
+(`min(seat_timeout_s, seat_step/v_seat)`), con presupuesto de 9 mm por defecto
+y tope absoluto de 10 mm. No continúa si `d <= 0.235 m`, el lateral supera
+6 mm o el rumbo supera 3°. Alcanzar un límite, recibir un parachoques en esta
+fase o agotar los pulsos acaba en parada, sin BACKOFF automático. La distancia
+real de contacto queda pendiente de validar en el RBOT. El primer `is_docked=true`
+detiene cualquier maniobra, incluso BACKOFF, y entra en **CONFIRM**: exige
+al menos tres mensajes nuevos `true` que cubran 2 s consecutivos, parado.
+Un `false` reinicia la confirmación; una muestra aislada no declara éxito.
+DONE mantiene los ceros y vigila el contacto: si después se pierde o deja
+de llegar el estado, pasa a STOPPED sin reanudar la marcha.
+
+El arranque muestra los límites efectivos de la fase final. La telemetría de
+WAIT_DOCK/SEAT incluye distancia actual y mínima observada, desplazamiento de
+odometría desde la espera y pulsos realmente ejecutados. La parada distingue
+el límite de distancia, el presupuesto de avance y los pulsos agotados: puede
+bloquearse antes del primer pulso. Si después de STOPPED llegan lecturas true
+estables, se informa como observación tardía, manteniendo la parada y sin
+declarar exitoso el docking autónomo. Estar sobre la rampa no confirma carga;
+la señal física debe verificarse con el robot encajado manualmente antes de
+ajustar de nuevo las distancias de aproximación.
+
+Hay como máximo dos reintentos adicionales por desalineación o choque durante
+la aproximación, 12 s por recuperación y 180 s
+por corrida. Si DOCK no progresa durante 12 s, también pasa a la espera
+parado. La pérdida de scans válidos o TF durante más de 0.75 s, del marcador
+durante más de 3 s, o de dock_status durante más de 2.5 s provoca una parada
+que requiere relanzar el nodo. Al arrancar espera datos hasta 15 s. Se
+comprueban recepción y sellos de tiempo; el PC y el RBOT deben tener sus
+relojes sincronizados. `/dock_status` usa QoS compatible con best effort.
+
+Un launch y un nodo, tanto para comprobar sin movimiento como para ejecutar:
+
+```bash
+# Sin movimiento: toda salida cmd_vel es cero
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py dry_run:=true log_level:=debug
+
+# Corrida física, solo cuando el operador haya posicionado el robot
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py log_level:=debug
+```
+
+Para Gazebo hay que indicar `use_sim_time:=true range_sigma:=0.001`.
+Las métricas de simulación y las explicaciones históricas siguientes
+corresponden a la versión anterior; no validan esta actualización física.
+
+Pruebas de regresión sin contexto DDS, sin publicar a ningún robot:
+
+```bash
+source /opt/ros/humble/setup.bash
+cd ~/sim_ws/src/terraslam_solucion_dock_lidar
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q -p no:cacheprovider test
+```
+
 Docking autónomo del iRobot Create 3 usando **solo el LiDAR**. El robot
 reconoce las dos cajas marcadoras por su geometría, **triangula sus bordes**
 con precisión sub-muestra, estima el eje del dock y la normal de la pared, y
 se acopla en lazo cerrado hasta que `/dock_status` reporta `is_docked: true`.
 
-| Resultado en simulación (20 poses aleatorias del rango del jurado) | |
+| Resultado histórico en simulación (20 poses aleatorias del rango del jurado) | |
 |---|---|
 | Acoplamientos (sin choques) | **20/20** |
 | Tiempo medio hasta `is_docked` | **16,7 s** (peor caso 18,9 s) |
@@ -14,18 +176,19 @@ se acopla en lazo cerrado hasta que `/dock_status` reporta `is_docked: true`.
 
 ## Contenido
 
-1. [Equipo](#equipo)
-2. [Instalación y build](#instalación-y-build)
-3. [Cómo correrlo](#cómo-correrlo)
-4. [Parámetros del launch](#parámetros-del-launch)
-5. [Cómo funciona](#cómo-funciona)
+1. [Resultados en el RBOT real](#resultados-en-el-rbot-real)
+2. [Equipo](#equipo)
+3. [Instalación y build](#instalación-y-build)
+4. [Cómo correrlo](#cómo-correrlo)
+5. [Parámetros del launch](#parámetros-del-launch)
+6. [Cómo funciona](#cómo-funciona)
    - [Cómo sabe el LiDAR que esas son las cajas](#1-percepción-cómo-sabe-el-lidar-que-esas-son-las-cajas)
    - [Triangulación de los bordes](#2-triangulación-sub-muestra-de-los-bordes)
    - [Filtro de Kalman](#3-estimación-filtro-de-kalman-en-odom)
    - [Control](#4-control-en-el-frame-del-dock)
-6. [Condiciones consideradas](#condiciones-consideradas)
-7. [Validación](#validación)
-8. [Limitaciones conocidas](#limitaciones-conocidas)
+7. [Condiciones consideradas](#condiciones-consideradas)
+8. [Validación histórica en simulación](#validación-histórica-en-simulación)
+9. [Limitaciones conocidas](#limitaciones-conocidas)
 
 ---
 
@@ -42,7 +205,7 @@ se acopla en lazo cerrado hasta que `/dock_status` reporta `is_docked: true`.
 
 ## Instalación y build
 
-Requiere Ubuntu 22.04, ROS 2 Humble, Gazebo Classic 11 y el escenario
+Requiere Ubuntu 22.04 y ROS 2 Humble. Para simulación, Gazebo Classic 11 y el escenario
 [`create3_dock_challenge`](https://github.com/Kalman-Robotics/create3_dock_challenge)
 en el mismo workspace. La única dependencia extra es **NumPy**, declarada en
 `package.xml` e instalada por rosdep.
@@ -71,22 +234,27 @@ ros2 run create3_dock_challenge clean_sim.sh
 ros2 launch create3_dock_challenge challenge_world.launch.py
 
 # Terminal 2: la solución
-ros2 launch terraslam_solucion_dock_lidar solucion.launch.py
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py use_sim_time:=true range_sigma:=0.001
 ```
 
-El nodo arranca solo, se acopla, se detiene y queda en silencio. **Para la
-evaluación no hace falta pasar ningún argumento**: los valores por defecto
-son los validados.
+El nodo arranca solo. El ejemplo anterior es para Gazebo. En el RBOT físico,
+el comando sin esos dos argumentos usa los valores por defecto descritos al
+inicio; después del acoplamiento confirmado mantiene ceros.
 
-### Salida esperada
+### Ejemplo de salida con contacto estable
+
+Ejemplo ilustrativo de la versión actual; los tiempos no son una medición
+de éxito físico de esta revisión.
 
 ```
-[dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.30 m/s, w_max 1.50 rad/s, v_fine 0.050, v_dock 0.025 | range_sigma 0.001 m
-[dock_lidar]: TF disponible, arrancando
-[dock_lidar]: [  0.05s] SEARCH -> APPROACH
-[dock_lidar]: [ 11.70s] APPROACH -> DOCK
-[dock_lidar]: is_docked = true a los 14.25 s
-[dock_lidar]: [ 14.65s] DOCK -> DONE
+[dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[dock_lidar]: [  1.00s] SEARCH -> APPROACH
+[dock_lidar]: [ 20.00s] APPROACH -> DOCK
+[dock_lidar]: is_docked=true recibido durante DOCK
+[dock_lidar]: [ 23.00s] DOCK -> CONFIRM
+[dock_lidar]: [ 25.00s] CONFIRM -> DONE
+[dock_lidar]: acoplamiento confirmado parado: 3 lecturas, 2.00 s estables
 ```
 
 La primera línea resume la configuración efectiva: conviene revisarla antes
@@ -106,7 +274,7 @@ ros2 launch terraslam_solucion_dock_lidar solucion.launch.py log_level:=debug
 # Probar desde otra pose (en la terminal del escenario)
 ros2 launch create3_dock_challenge challenge_world.launch.py x:=1.3 y:=0.9 yaw:=1.0
 
-# Create 3 real con el RPLIDAR C1
+# RBOT físico con el RPLIDAR A1
 ros2 launch terraslam_solucion_dock_lidar solucion.launch.py use_sim_time:=false range_sigma:=0.01
 ```
 
@@ -125,7 +293,8 @@ normal**, nunca en coordenadas del mundo.
 
 | Argumento | Defecto | Descripción |
 |---|---|---|
-| `use_sim_time` | `true` | Reloj de Gazebo. `false` en el robot real. |
+| `use_sim_time` | `false` | `false` en el robot real; `true` para Gazebo. |
+| `dry_run` | `false` | `true` evalúa las decisiones publicando solo ceros. |
 | `scan_topic` | `/scan` | LaserScan de entrada. |
 | `cmd_vel_topic` | `/cmd_vel` | Twist de salida. |
 | `dock_status_topic` | `/dock_status` | Solo se lee `is_docked`. |
@@ -138,30 +307,31 @@ normal**, nunca en coordenadas del mundo.
 
 | Argumento | Defecto | Descripción |
 |---|---|---|
-| `range_sigma` | `0.001` | Ruido del LiDAR [m]. **Todas las tolerancias del detector escalan con él.** 0,001 en simulación; ~0,01 en el C1 real. |
+| `range_sigma` | `0.01` | Ruido del LiDAR [m]. 0,01 como referencia del A1; 0,001 en simulación. |
 | `max_scan_range` | `6.0` | Ignora lecturas más lejanas [m]. |
 
 ### Velocidades
 
 | Argumento | Defecto | Descripción |
 |---|---|---|
-| `v_max` | `0.30` | Velocidad lineal máxima [m/s]. Límite del Create 3: 0,46 con `safety_override=full` (el que aplica el escenario). |
-| `w_max` | `1.5` | Velocidad angular máxima [rad/s]. |
+| `v_max` | `0.14` | Velocidad lineal máxima [m/s], limitada siempre a 0,20 por Kalman. |
+| `w_max` | `0.4` | Velocidad angular máxima [rad/s], limitada siempre a 0,50 por Kalman. |
 | `v_fine` | `0.05` | Velocidad en el tramo fino [m/s]. |
-| `v_dock` | `0.025` | Velocidad sobre la rampa [m/s]. |
+| `v_dock` | `0.035` | Velocidad sobre la rampa [m/s]; ≥ 0,03, mínimo del firmware. |
+| `v_seat` | `0.01` | Velocidad de asentamiento recto, limitada a 0,01 m/s. |
 | `v_backoff` | `0.12` | Velocidad de retroceso al reintentar [m/s]. |
-| `w_search` | `0.8` | Giro de búsqueda [rad/s]. |
+| `w_search` | `0.3` | Giro de búsqueda [rad/s]. |
 
 ### Ganancias y geometría de la maniobra
 
 | Argumento | Defecto | Descripción |
 |---|---|---|
-| `k_w` | `3.0` | Ganancia proporcional de rumbo. |
-| `k_i` | `2.5` | Ganancia integral de rumbo (solo en el tramo fino). |
-| `d_fine` | `0.60` | Inicio del tramo fino [m]. |
+| `k_w` | `1.0` | Ganancia proporcional de rumbo. |
+| `k_i` | `0.0` | Ganancia integral de rumbo (desactivada en el RBOT). |
+| `d_fine` | `0.75` | Inicio del tramo fino [m]. |
 | `d_slow` | `0.42` | Desde aquí se exige alineación; si no, retrocede y reintenta [m]. |
 | `d_dock` | `0.33` | Inicio del tramo de rampa [m]. |
-| `d_floor` | `0.245` | Distancia mínima sin acoplar: más cerca, retrocede [m]. |
+| `d_floor` | `0.231` | Distancia de parada para esperar dock_status [m]. Calibrada: acoplado = 0,2373 m. |
 | `d_stage` | `0.75` | Punto de preparación sobre el eje [m]. |
 | `align_tol_lat` | `0.025` | Error lateral máximo al pasar `d_slow` [m]. |
 | `align_tol_head_deg` | `15.0` | Error de rumbo máximo al pasar `d_slow` [°]. |
@@ -173,7 +343,19 @@ normal**, nunca en coordenadas del mundo.
 | `hazard_topic` | `/hazard_detection` | `HazardDetectionVector`; solo se usa el tipo `BUMP`. |
 | `react_to_bumps` | `true` | Ante un choque: retroceder recto (`ESCAPE`) y reintentar. |
 | `bump_escape_s` | `0.8` | Duración del retroceso recto tras un choque [s]. |
-| `max_bump_retries` | `3` | Reintentos por choque; después se ignoran, para no quedar en bucle si el contacto es legítimo (rampa del dock). |
+| `max_bump_retries` | `3` | Límite de recuperaciones por choque; también cuenta el presupuesto total de reintentos. Después se detiene. |
+
+### Barrido de rumbo en el contacto (`SWEEP`)
+
+| Argumento | Defecto | Descripción |
+|---|---|---|
+| `dock_sweep` | `true` | Sin `is_docked` en la distancia de acople: barrido de rumbo por pulsos. |
+| `sweep_max_deg` | `6.0` | Amplitud máxima respecto a la normal de las cajas [°] (máximo 10). |
+| `sweep_step_deg` | `1.5` | Paso entre objetivos [°]. Orden: +1, −1, +2, −2… pasos. |
+| `sweep_w` | `0.3` | Giro de cada pulso [rad/s]. ≥ 0,26: más lento, las ruedas quedan bajo 0,03 m/s. |
+| `sweep_hold_s` | `1.2` | Pausa quieto tras cada pulso; dock_status llega a 1 Hz [s]. |
+| `sweep_tol_lat` | `0.02` | Error lateral máximo para iniciar el barrido [m]. |
+| `sweep_timeout_s` | `25.0` | Duración máxima del barrido [s]. |
 
 ### Búsqueda, exploración y final
 
@@ -184,20 +366,32 @@ normal**, nunca en coordenadas del mundo.
 | `explore_step` | `0.8` | Paso máximo de `EXPLORE` [m]. |
 | `explore_timeout_s` | `8.0` | Tiempo máximo por paso de `EXPLORE` [s]. |
 | `obstacle_clearance` | `0.45` | `EXPLORE` se detiene si hay algo a menos de esto por delante [m]. |
-| `dock_push_s` | `0.4` | Sigue empujando tras `is_docked` para asentar los contactos [s]. |
+| `dock_push_s` | `0.0` | Obsoleto e ignorado; no se empuja durante la confirmación. |
+| `dock_confirm_s` | `2.0` | Tiempo de lecturas true consecutivas, con al menos tres mensajes nuevos [s]. |
+| `dock_wait_s` | `3.0` | Espera parado antes del siguiente pulso de asentamiento [s]. |
+| `seat_step` | `0.003` | Avance máximo por pulso final [m]. |
+| `max_seat_steps` | `0` | Pulsos experimentales desactivados por defecto; después STOPPED, sin retroceso largo. |
+| `seat_min_distance` | `0.230` | Distancia mínima para continuar asentando [m]; debe ser < `d_floor`. |
+| `seat_timeout_s` | `0.6` | Límite por pulso; también se limita por `seat_step/v_seat` [s]. |
+| `seat_tol_lat`, `seat_tol_head_deg` | `0.006`, `3.0` | Alineación exigida para el asentamiento [m, °]. |
+| `dock_timeout_s` | `12.0` | Tiempo máximo de avance en DOCK antes de esperar parado [s]. |
+| `max_dock_retries` | `2` | Reintentos adicionales al primer intento, compartidos con los choques. |
+| `retry_timeout_s` | `12.0` | Tiempo máximo por recuperación [s]. |
+| `scan_timeout_s`, `tf_timeout_s` | `0.75` | Edad máxima de scan y TF [s]. |
+| `detection_timeout_s` | `3.0` | Tiempo máximo sin detectar el marcador [s]. |
+| `dock_status_timeout_s` | `2.5` | Edad máxima del estado de acoplamiento [s]. |
+| `startup_timeout_s` | `15.0` | Espera máxima de datos al arrancar [s]. |
+| `run_timeout_s` | `180.0` | Tiempo máximo de la corrida [s]. |
 
 El nodo **valida los valores al arrancar**: sube `control_rate_hz` a 5 Hz
-como mínimo y avisa si `v_max > 0,46`, si `d_floor < 0,23` (tocaría las
+como mínimo, limita `v_max` a 0,20 y `w_max` a 0,50, y avisa si `d_floor < 0,23` (tocaría las
 cajas), si `v_dock > 0,05` o si las distancias no están en orden
 `d_floor < d_dock < d_slow < d_fine`.
 
-**Ajustes típicos:**
-- *Más rápido:* `v_max:=0.40 v_fine:=0.07`. Medido en dos poses: unos 2,5 s
-  menos (13,1 y 15,4 s) con la misma precisión. Con 16,7 s de media ya se
-  está muy por debajo de los 45 s que dan puntaje completo, así que por
-  defecto se prefiere el margen.
-- *Más preciso o más seguro:* `v_fine:=0.04 d_fine:=0.70`.
-- *LiDAR con más ruido:* sube `range_sigma`.
+**Ajustes físicos:** los valores 0.14/0.05 m/s son la referencia del equipo.
+El siguiente ensayo aislado usa 0.08/0.03 m/s, sin recuperaciones ni pulsos,
+como se detalla en la [bitácora](docs/BITACORA_RBOT.md). Confirmar contacto
+estable desde una pose registrada antes de comparar velocidades o distancias.
 
 ---
 
@@ -356,26 +550,35 @@ Todo el control se hace en coordenadas del dock:
 
 #### Máquina de estados
 
+```mermaid
+flowchart TD
+    SEARCH <--> EXPLORE
+    SEARCH --> STAGE
+    SEARCH --> APPROACH
+    EXPLORE --> APPROACH
+    EXPLORE --> STAGE
+    STAGE --> APPROACH
+    APPROACH --> STAGE
+    APPROACH --> DOCK
+    APPROACH -->|desalineado cerca; quedan reintentos| BACKOFF
+    DOCK -->|desalineado; quedan reintentos| BACKOFF
+    BACKOFF --> APPROACH
+    DOCK -->|d_floor o tiempo agotado| WAIT_DOCK
+    APPROACH -->|d_floor| WAIT_DOCK
+    DOCK -->|primer true: parar| CONFIRM
+    WAIT_DOCK -->|primer true| CONFIRM
+    CONFIRM -->|false| WAIT_DOCK
+    CONFIRM -->|3 mensajes true durante al menos 2 s| DONE
+    WAIT_DOCK -->|sin contacto, en distancia y centrado| SWEEP
+    SWEEP -->|primer true| CONFIRM
+    SWEEP -->|barrido agotado, fuera de envolvente o choque| STOPPED
+    WAIT_DOCK -->|sin contacto y fuera de envolvente| STOPPED
+    DONE -->|false o estado antiguo| STOPPED
 ```
-             ┌──────────┐ sin marcador tras girar ┌─────────┐
-  inicio ──► │  SEARCH  │ ──────────────────────► │ EXPLORE │ ─┐
-             └────┬─────┘ ◄────────────────────── └────┬────┘  │
-                  │ marcador visto                     │       │
-                  ▼                                    │       │
-    fuera del cono│   ┌─────────┐                      │       │
-                  ├──►│  STAGE  │──┐ entra al cono     │       │
-                  │   └─────────┘  │                   │       │
-                  ▼                ▼                   ▼       │
-             ┌──────────────────────────┐   d < d_dock  ┌──────┴─┐
-             │         APPROACH         │ ────────────► │  DOCK  │
-             └──────────────────────────┘               └───┬────┘
-                  ▲      desalineado cerca / d < d_floor    │ is_docked
-                  │         ┌──────────┐ ◄──────────────────┤
-                  └─────────│ BACKOFF  │                    ▼
-                            └──────────┘               ┌────────┐
-                                                       │  DONE  │
-                                                       └────────┘
-```
+
+El primer true también interrumpe los demás estados de maniobra, incluido
+BACKOFF, para entrar en CONFIRM. La pérdida de datos o el agotamiento de
+reintentos lleva a STOPPED. SEAT es una opción experimental desactivada.
 
 Además, desde `SEARCH`, `EXPLORE`, `STAGE`, `APPROACH` o `DOCK`, un choque
 del parachoques lleva a **`ESCAPE` → `BACKOFF`**, o a `SEARCH` si todavía no
@@ -387,10 +590,15 @@ se conoce el dock.
 | `EXPLORE` | Si sigue sin ver el marcador (ocluido, o visto con más de ~65° de inclinación), avanza hasta `explore_step` hacia el **centroide de área del polígono de espacio libre** que ve el LiDAR. Ese centroide es el centro de la zona despejada: alejarse de las paredes abre el ángulo con que se ve el marcador. Se detiene si hay un obstáculo a menos de `obstacle_clearance` por delante. |
 | `STAGE` | Si el robot está fuera del **cono de aproximación** (`|e| > 0,55 · (d − 0,30)`: demasiado lateral y cerca de la pared para entrar directo), va primero a un punto sobre el eje a `d_stage`. Entra en `APPROACH` con histéresis (pendiente 0,45). |
 | `APPROACH` | Pure pursuit sobre el eje (ver abajo), con la velocidad bajando con `d`. |
-| `DOCK` | Tramo de rampa a `v_dock` hasta `is_docked`. |
+| `DOCK` | Tramo de rampa a `v_dock`; al llegar alineado a `d_floor` o agotar el tiempo, espera parado. |
 | `ESCAPE` | El parachoques detectó un choque (desde cualquier estado de maniobra): retrocede recto `bump_escape_s` y pasa a `BACKOFF` si ya conoce el dock, o a `SEARCH` si no. Ver [Reacción a choques](#reacción-a-choques). |
-| `BACKOFF` | Si pasa `d_slow` desalineado (más de `align_tol_lat` o `align_tol_head_deg`) o baja de `d_floor`, retrocede corrigiendo el rumbo hasta `d_slow + 0,20 m` y reintenta. |
-| `DONE` | Tras `is_docked`, empuja `dock_push_s` más para asentarse sobre los contactos, publica ceros y queda en silencio. |
+| `BACKOFF` | Recuperación limitada por desalineación cerca o tras ESCAPE: retrocede hasta `d_slow + 0,20 m` y reintenta. Llegar alineado a `d_floor` no lo activa. |
+| `WAIT_DOCK` | Espera parado hasta 3 s. Sin true: SWEEP si está en distancia y centrado; si no, STOPPED. |
+| `SWEEP` | Barrido de rumbo en el sitio por pulsos (±1,5°, ±3°… hasta ±6°) con pausas quieto de 1,2 s; `v=0`. El primer true lleva a CONFIRM; agotarlo, alejarse del eje o un choque, a STOPPED sin retroceder. |
+| `SEAT` | Pulsos experimentales limitados por distancia, tiempo, alineación y odometría; desactivados por defecto. |
+| `CONFIRM` | Ceros desde el primer true; exige tres mensajes nuevos que abarquen al menos 2 s. |
+| `DONE` | Mantiene ceros y supervisa dock_status. Si pierde contacto o frescura, pasa a STOPPED. |
+| `STOPPED` | Mantiene ceros hasta relanzar. Un true tardío se informa sin rearmar la maniobra. |
 
 #### Reacción a choques
 
@@ -405,10 +613,11 @@ físicos: una lista de detecciones, cada una con un **tipo** y, en
 | `BACKUP_LIMIT` (0) | Retrocedió más de lo que permite su modo de seguridad | No: desactivado con `full` |
 | `WHEEL_DROP` (4), `STALL` (3), `OBJECT_PROXIMITY` (5) | Rueda colgando, ruedas trabadas, IR frontal | No |
 
-Cada choque con cajas, dock o pared cuesta **−10 puntos por corrida**. El
-firmware del Create 3 ya tiene un reflejo (`REFLEX_BUMP`) que retrocede un
-poco, pero es ciego: no sabe dónde está el dock y la maniobra volvería a
-empujar contra lo mismo. Por eso, ante un `BUMP`:
+Cada choque con cajas, dock o pared cuesta **−10 puntos por corrida**.
+La respuesta descrita depende de recibir `/hazard_detection`. En el
+diagnóstico físico anterior no se observó un publicador y el parámetro
+`REFLEX_BUMP` se leyó como `false`; no se modificó. Ante un nuevo `BUMP`
+durante la aproximación, si queda presupuesto:
 
 1. **`ESCAPE`:** retrocede **recto** `bump_escape_s` (0,8 s a `v_backoff`).
    Recto porque el parachoques es frontal: girar arrastraría el borde del
@@ -416,14 +625,14 @@ empujar contra lo mismo. Por eso, ante un `BUMP`:
 2. **`BACKOFF`:** retrocede sobre el eje, corrigiendo el rumbo, hasta
    `d_slow + 0,20 m`, y reintenta la aproximación con el filtro intacto.
    Si todavía no conocía el dock, vuelve a `SEARCH`.
-3. **Límite de reintentos** (`max_bump_retries` = 3): después, los choques se
-   ignoran. Así un contacto legítimo, como el del frente del robot con la
-   rampa, no puede dejarlo en un bucle infinito.
+3. **Límites:** `max_bump_retries=3`, presupuesto global
+   `max_dock_retries=2` y `retry_timeout_s=12`. Agotarlos provoca STOPPED;
+   no se ignoran nuevos choques. Un BUMP persistente cuenta como un evento.
 
-Se ignoran los choques con el robot ya acoplado, en `DONE` o durante el
-propio `ESCAPE`. En las pruebas normales el parachoques **nunca** se activó,
-ni siquiera al subir la rampa del dock: la reacción es una red de seguridad,
-sobre todo para el robot real.
+En WAIT_DOCK o SEAT, un BUMP causa STOPPED sin retroceder. En CONFIRM,
+DONE y STOPPED se mantienen los ceros; ESCAPE no se reinicia por el mismo
+contacto. Las pruebas históricas sin BUMP en simulación no validan la
+disponibilidad de este tópico en el RBOT físico.
 
 #### Ley de control: pure pursuit sobre el eje
 
@@ -482,21 +691,21 @@ luego avanza.
 | Sin hardcodeo | No hay poses, distancias a la pared ni secuencias de movimiento fijas. Las únicas constantes geométricas son las **medidas del marcador** (8 cm, 8 cm, 9,5 cm), que el README del reto indica usar para reconocer la firma. |
 | No modificar el escenario | `create3_dock_challenge` queda intacto; la solución es un paquete aparte. |
 | Comando único | `ros2 launch terraslam_solucion_dock_lidar solucion.launch.py`, sin argumentos obligatorios. |
-| 180 s por corrida | El peor caso medido es 18,9 s. |
+| 180 s por corrida | Límite de ejecución por reloj monotónico; 18,9 s es el peor caso histórico en simulación. |
 
 ### Sensor y robot
 
 | Condición | Cómo se trata |
 |---|---|
 | LiDAR 5 cm detrás, 1,8 cm a la derecha, girado 180° | Todo pasa por TF a `base_link`; nunca se asume que `ranges[0]` apunta al frente. |
-| Plano de escaneo a 17,75 cm | Corta las cajas (13–25 cm) a media altura. Se verificó en el scan real que **el dock no aparece** en ese plano, así que no interfiere. |
+| Altura del plano de escaneo | En el escenario histórico: 17,75 cm. El TF leído en el RBOT dio z=0,12 m respecto a base_link; son referencias distintas. No se sustituye TF por la altura de simulación. |
 | Rango mínimo 0,15 m | Acoplado, las cajas quedan a ~0,24 m del LiDAR: siempre visibles. Si se pierden, el filtro mantiene la estimación. |
-| Ruido σ = 1 mm | Las tolerancias escalan con `range_sigma`; probado offline hasta 1 cm. |
+| Ruido del LiDAR | Las tolerancias escalan con `range_sigma`: 0,01 m por defecto en RBOT y 0,001 m para simulación. |
 | Resolución de 0,5° (~1,3 cm entre puntos a 1,5 m) | Triangulación sub-muestra de los bordes. |
 | Vistas oblicuas (hasta 58° en el rango del jurado) | Selección iterativa que excluye las caras laterales; detecta hasta ~65°. Más allá, `EXPLORE`. |
 | Oclusiones y estructuras cercanas (columna del laboratorio) | Pared ajustada localmente; validaciones 2–4 del par; `EXPLORE`. |
 | El Create 3 se detiene sin comandos continuos | `/cmd_vel` a 20 Hz (mínimo forzado de 5 Hz). |
-| Velocidad máxima 0,46 m/s (`safety_override=full`) | `v_max` = 0,30 por defecto, con aviso si se pasa de 0,46. |
+| Límites físicos de Kalman | Tope central en todos los estados: 0,20 m/s y 0,50 rad/s; valores configurados por defecto de 0,14 y 0,40. |
 
 ### Acoplamiento
 
@@ -504,14 +713,18 @@ luego avanza.
 |---|---|
 | `is_docked` exige receptor–emisor < 7,5 cm, ±6° sobre el eje y ±6° de rumbo | El control lleva ambos errores a ~0 antes de la rampa; peor caso medido 0,24°. |
 | El centro debe llegar a menos de ~26,8 cm de la pared | El robot avanza a `v_dock` hasta que `is_docked` se activa, sin una distancia objetivo fija. |
-| Tocar cajas, dock o pared penaliza (−10) | Con el frente circular del robot, el contacto con las cajas ocurre a `d` < 22,5 cm; `d_floor` = 24,5 cm fuerza un retroceso antes. Si aun así el parachoques detecta un choque, `ESCAPE` + `BACKOFF` + reintento. 0 choques en todas las pruebas. |
+| Tocar cajas, dock o pared penaliza (−10) | `d_floor=0,231 m` (acoplado = 0,2373 m; las cajas se tocan a ~0,225 m) lleva a WAIT_DOCK si llega alineado. SWEEP solo gira, sin avanzar. En el RBOT no existe `/hazard_detection`, así que la reacción a BUMP no está disponible allí. |
+| Dock físico girado respecto a las cajas | Medido en el RBOT: ~3°. SWEEP lo busca sin calibrar ningún ángulo, así que funciona aunque el dock se coloque distinto. |
 | La rampa hace rebotar si se entra rápido o torcido | 2,5 cm/s en la rampa, y `BACKOFF` si llega desalineado. |
-| Quedarse corto es el fallo más común | No se para por distancia sino por `is_docked`, y luego empuja 0,4 s más. |
+| Quedarse corto o recibir un true fugaz | Distancia final con planos recientes del LiDAR, espera parada y confirmación temporal; no se empuja tras true. La llegada física sigue pendiente de validar. |
 | Puntaje de tiempo completo hasta 45 s | Media de 16,7 s. |
 
 ---
 
-## Validación
+## Validación histórica en simulación
+
+Las cifras siguientes pertenecen a la versión anterior. La verificación
+actual y los ensayos físicos se registran en la [bitácora](docs/BITACORA_RBOT.md).
 
 Las pruebas usan scripts externos al paquete (el ground truth solo se lee
 ahí, para medir): un ray-caster 2D para el detector y un evaluador que lanza
@@ -555,12 +768,13 @@ reacción.
   pegadas a una pared lateral, el marcador se ve demasiado de canto y el
   robot tiene que explorar antes de detectarlo: acopla igual, pero en 23–42 s
   en vez de ~17 s.
-- **Choques reales.** La reacción a choques se validó con choques
-  inyectados, no con colisiones físicas (en simulación la solución no choca).
-  En un choque real el firmware también ejecuta su reflejo `REFLEX_BUMP`, que
-  puede retrasar unos segundos la maniobra. En una de las pruebas, el
-  `BACKOFF` tardó 10 s en vez de ~1 s sin causa confirmada, aunque el robot
-  acopló igual.
+- **Choques reales.** Las pruebas históricas usaron choques inyectados en
+  simulación. En la conexión física anterior no se observó publicador de
+  `/hazard_detection` y `REFLEX_BUMP` se leyó como `false`; no se presupone
+  una reacción del firmware. La disponibilidad de esa entrada sigue pendiente.
+- **Dock girado respecto a las cajas.** El LiDAR solo ve las cajas; si el
+  dock está girado, el contacto se busca con SWEEP (±6° como máximo, 25 s).
+  Un dock girado más de ~6° no se cubre.
 - **Distancias largas.** Más allá de ~3 m de la pared, cada caja recibe muy
   pocos rayos y la detección se vuelve intermitente. Queda fuera del rango
   de evaluación.
@@ -574,6 +788,12 @@ terraslam_solucion_dock_lidar/
 ├── package.xml
 ├── setup.py, setup.cfg
 ├── README.md
+├── docs/
+│   ├── BITACORA_RBOT.md        ← decisiones, resultados y siguiente pose
+│   ├── img/                    ← figuras generadas desde los logs reales
+│   └── pruebas/                ← evidencia persistente de cada corrida
+├── test/
+│   └── test_docking_safety.py  ← 80 pruebas sin DDS ni robot
 ├── launch/
 │   └── solucion.launch.py      ← comando único, todos los parámetros
 └── terraslam_solucion_dock_lidar/
