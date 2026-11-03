@@ -13,6 +13,7 @@
   <author email="patrick.echevarria.d@gmail.com">Patrick Fabrizio Echevarria Duran</author>
   <author email="pradovasquezm@gmail.com">Marco Jesus Prado Vasquez</author>
   <author email="camilo.callupe.m@uni.pe">Camilo Roger Callupe Menejes</author>
+  <author email="viviana.ventura.c@uni.pe">Viviana Ofelia Ventura Condo</author>
 
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
