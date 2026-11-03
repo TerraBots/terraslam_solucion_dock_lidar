@@ -1,0 +1,8 @@
+[INFO] [1793685093.353992270] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793685093.354495539] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793685093.381561243] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo
+[INFO] [1793685093.481233915] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[INFO] [1793685099.981415932] [dock_lidar]: [  6.50s] SEARCH -> EXPLORE
+[WARN] [1793685105.531467207] [dock_lidar]: datos interrumpidos: LiDAR ausente o antiguo; espero quieto hasta 5.0 s
+[ERROR] [1793685110.531651517] [dock_lidar]: PARADA: LiDAR ausente o antiguo durante mas de 5.0 s. Relanza para otra corrida.
+[INFO] [1793685110.532194257] [dock_lidar]: [ 17.05s] EXPLORE -> STOPPED

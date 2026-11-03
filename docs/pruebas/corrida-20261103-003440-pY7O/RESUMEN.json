@@ -1,0 +1,18 @@
+{
+  "fecha": "2026-11-03T00:34:40",
+  "autorizacion": "Patrick: 'probemos con esta pose y listo' (una corrida, ultima de la reserva)",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial": "Camara: arriba a la izquierda, ~0.5-0.7 m de la pared del dock y ~0.7-0.8 m a la izquierda del dock, mirando hacia la pared izquierda (de lado/espaldas al dock). pose_check: 0/10 detecciones; nada a menos de 0.6 m. Odometria: el punto acoplado quedo a ~1.08 m de la salida.",
+  "transiciones_s": {"SEARCH->STAGE": 2.91, "STAGE->SEARCH (reacq 1/3, d~0.73)": 9.55, "SEARCH->STAGE": 10.90, "STAGE->APPROACH": 13.40, "APPROACH->DOCK": 23.45, "DOCK->WAIT_DOCK": 29.80, "WAIT_DOCK->SWEEP": 32.85, "SWEEP->CONFIRM": 33.96, "CONFIRM->DONE": 37.00},
+  "primera_telemetria_approach": {"d_m": 0.714, "lateral_mm": -195.7, "head_err_deg": 44.95},
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": -0.6, "head_err_deg": 1.3, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "nota": "ya dentro de 0.5 deg: sin pulso"},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.3, "pulso_s": 0.16, "evento": "true 1.06 s tras iniciar el pulso (en la pausa) -> CONFIRM -> DONE"}
+  ],
+  "datos": "Sin huecos en /odom ni /scan.",
+  "odometria": "(0.720, 1.200, th 2.48) -> (1.401, 0.364, th 0.18)",
+  "interpretacion": "Hecho: pose cercana y oblicua sin deteccion inicial; SEARCH 2.9 s, STAGE perdio el marcador a d~0.73 m y la re-busqueda lo recupero en 1.35 s; primer true a 33.96 s, DONE a 37.0 s con defaults; salida limpia; is_docked true despues.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

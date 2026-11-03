@@ -1,0 +1,28 @@
+[INFO] [1793686854.608255342] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793686854.608691639] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793686854.637815845] [dock_lidar]: esperando datos: dock_status ausente o antiguo
+[INFO] [1793686855.380877180] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[INFO] [1793686856.385105549] [dock_lidar]: [  1.00s] SEARCH -> STAGE
+[DEBUG] [1793686856.542464476] [dock_lidar]: marcador no detectado en STAGE
+[DEBUG] [1793686856.648525449] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.24 m) en STAGE
+[DEBUG] [1793686858.341371017] [dock_lidar]: marcador no detectado en STAGE
+[DEBUG] [1793686858.446020689] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.24 m) en STAGE
+[DEBUG] [1793686858.744821340] [dock_lidar]: marcador no detectado en STAGE
+[DEBUG] [1793686858.847367056] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.25 m) en STAGE
+[DEBUG] [1793686862.039452794] [dock_lidar]: marcador no detectado en STAGE
+[DEBUG] [1793686862.144365197] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.30 m) en STAGE
+[DEBUG] [1793686862.441864158] [dock_lidar]: marcador no detectado en STAGE
+[WARN] [1793686865.381099126] [dock_lidar]: marcador perdido 3.0 s en STAGE lejos del dock (d~1.58 m): vuelvo a buscar (1/3)
+[INFO] [1793686865.381468412] [dock_lidar]: [ 10.00s] STAGE -> SEARCH
+[INFO] [1793686866.237568891] [dock_lidar]: [ 10.86s] SEARCH -> STAGE
+[DEBUG] [1793686867.036938100] [dock_lidar]: marcador no detectado en STAGE
+[WARN] [1793686869.980919384] [dock_lidar]: marcador perdido 3.0 s en STAGE lejos del dock (d~1.45 m): vuelvo a buscar (2/3)
+[INFO] [1793686869.981311068] [dock_lidar]: [ 14.60s] STAGE -> SEARCH
+[INFO] [1793686870.433490085] [dock_lidar]: [ 15.05s] SEARCH -> APPROACH
+[DEBUG] [1793686870.434007353] [dock_lidar]: d=1.447 e=+575.3mm head=-16.88deg L=0.42 v=0.140
+[DEBUG] [1793686870.934217589] [dock_lidar]: d=1.437 e=+538.9mm head=-16.94deg L=0.41 v=0.140
+[DEBUG] [1793686871.035706049] [dock_lidar]: marcador no detectado en APPROACH
+[DEBUG] [1793686871.481234949] [dock_lidar]: d=1.409 e=+479.5mm head=-11.22deg L=0.40 v=0.140
+[DEBUG] [1793686871.981454440] [dock_lidar]: d=1.376 e=+424.6mm head=-8.41deg L=0.39 v=0.140
+[DEBUG] [1793686872.531532293] [dock_lidar]: d=1.333 e=+367.3mm head=-7.08deg L=0.38 v=0.140
+[DEBUG] [1793686873.081135330] [dock_lidar]: d=1.285 e=+311.4mm head=-6.82deg L=0.36 v=0.140

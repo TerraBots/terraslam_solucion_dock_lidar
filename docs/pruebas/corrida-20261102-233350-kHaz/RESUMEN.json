@@ -1,0 +1,15 @@
+{
+  "fecha": "2026-11-02T23:33:50",
+  "autorizacion": "Patrick: 'listo procede, ya lo puse' (una corrida, punto 5)",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "e5c05d1757f3992c1d5403289ecf33556b41596616d2bcb4865f73c0cbd01342",
+  "pose_inicial_pose_check": {"d_m": 0.858, "lateral_mm": 748.0, "rumbo_respecto_normal_deg": -98.30, "detecciones": "10/10", "residuo_mm": 5.43, "obstaculo_mas_cercano_m": 0.84},
+  "transiciones_s": {"SEARCH->STAGE": 1.05, "STAGE->APPROACH": 4.70, "APPROACH->DOCK": 17.10, "DOCK->WAIT_DOCK": 22.50, "WAIT_DOCK->SWEEP": 25.55, "SWEEP->CONFIRM": 26.99, "CONFIRM->DONE": 29.00},
+  "llegada_wait_dock": {"d_m": 0.2351, "lateral_mm": 1.5, "head_err_deg": 1.3, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "nota": "ya dentro de 0.5 deg (rumbo +1.3): sin pulso"},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.3, "pulso_s": 0.16, "rumbo_tras_pausa_deg": -1.3, "evento": "true en la pausa, quieto en -1.3 deg -> CONFIRM -> DONE"}
+  ],
+  "interpretacion": "Hecho: lado opuesto a la corrida 3, a 75 cm del eje (mas que lo propuesto, dentro del rango del jurado +-0.9 m), paralelo a la pared; STAGE 3.65 s y DONE a 29.0 s con defaults; salida limpia; is_docked true despues. Contacto con el robot quieto en head_err -1.3 deg, consistente con la zona observada.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

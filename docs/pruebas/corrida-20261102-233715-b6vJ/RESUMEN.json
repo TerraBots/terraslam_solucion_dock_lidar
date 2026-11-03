@@ -1,0 +1,18 @@
+{
+  "fecha": "2026-11-02T23:37:15",
+  "autorizacion": "Patrick: 'ya esta' tras colocar el robot en el punto 6 pedido (una corrida)",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "e5c05d1757f3992c1d5403289ecf33556b41596616d2bcb4865f73c0cbd01342",
+  "pose_inicial": "punto 6 propuesto: ~1.3 m de la pared, ~40 cm a un lado, girado ~45 deg hacia afuera. pose_check: detecciones 0/10 (pared del dock en el sector trasero +120..+180 deg, con 16-21 de 40 rayos validos); obstaculo mas cercano 0.92 m",
+  "primera_telemetria_tras_stage": {"t_s": 11.4, "d_m": 1.095, "lateral_mm": 365.9, "head_err_deg": -39.7},
+  "transiciones_s": {"SEARCH->STAGE": 2.46, "STAGE->APPROACH": 11.40, "APPROACH->DOCK": 25.50, "DOCK->WAIT_DOCK": 33.80, "WAIT_DOCK->SWEEP": 36.81, "SWEEP->CONFIRM": 38.96, "CONFIRM->DONE": 41.00},
+  "stage": "Odometria/cmd: SEARCH giro +0.3 rad/s ~1.5 s (+0.4 rad); STAGE giro en el sitio a -0.4 rad/s (w_max) ~6.5 s, ~150 deg (camino mas corto hacia el punto de espera), luego avance a 0.14 m/s con correccion hasta entrar al cono a ~1.1 m.",
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": -0.4, "head_err_deg": 1.9, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "nota": "ya dentro de 0.5 deg: sin pulso"},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.9, "pulso_s": 0.19, "rumbo_tras_pausa_deg": -0.7},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": -0.7, "pulso_s": 0.10, "evento": "true 0.7 s tras iniciar el pulso -> CONFIRM -> DONE"}
+  ],
+  "interpretacion": "Hecho: DONE a 41.0 s (primer true a 38.96 s), con defaults, salida limpia, is_docked true despues. Mas lento que las demas por el giro de ~150 deg a w_max=0.4 rad/s en STAGE y una aproximacion mas larga (~1.1 m en el cono). Contacto en head_err -0.7..-1.5 deg.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

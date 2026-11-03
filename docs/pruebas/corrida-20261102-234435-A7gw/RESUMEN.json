@@ -1,0 +1,13 @@
+{
+  "fecha": "2026-11-02T23:44:35",
+  "autorizacion": "Patrick: 'procede' (una corrida, punto 7 elegido por el: esquina)",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "e5c05d1757f3992c1d5403289ecf33556b41596616d2bcb4865f73c0cbd01342",
+  "pose_inicial": "Esquina entre la pared del dock y la pared lateral, ~10-15 cm de cada una, mirando a la esquina, ~1.2 m a un lado del dock (camara cenital del lab y scan: paredes a 0.31-0.45 m del LiDAR en el frente, sala libre 2-3.9 m detras). Fuera del rango del jurado (lateral > 0.9 m). Detecciones 0/10: cajas vistas de canto.",
+  "transiciones_s": {"SEARCH->EXPLORE": 6.55, "EXPLORE->STOPPED": 11.05},
+  "parada": "PARADA: TF de odometria ausente o antiguo (tf_timeout 0.75 s).",
+  "evidencia_independiente": "observer.py (proceso aparte) registro un hueco de 3.55 s sin /odom; /dock_status siguio a 1 Hz. Despues de la corrida las edades volvieron a la normalidad (scan 0.10 s, odom 0.03 s).",
+  "movimiento": "Odometria inicio (0.531, 1.632, th 0.79) fin (0.529, 1.636, th -2.18): solo giro en el sitio (SEARCH y orientacion hacia el objetivo de EXPLORE); no llego a avanzar.",
+  "interpretacion": "Hecho: parada de seguridad correcta por corte de datos de odometria (conexion/robot), no fallo de deteccion ni de control. Sin choque. La prueba de la esquina queda sin resultado: no llego a explorar.",
+  "resultado": "STOPPED sin docking (no valido como prueba del algoritmo)"
+}

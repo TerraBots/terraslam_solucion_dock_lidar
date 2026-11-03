@@ -628,6 +628,12 @@ class DockLidar(Node):
                              'Tiempo maximo guiandose sin detectar el marcador [s]')
         self.status_timeout = P('dock_status_timeout_s', 2.5,
                                 'Edad maxima de dock_status [s]')
+        self.reacquire_max = int(P('max_reacquire', 3,
+                                   'Marcador perdido lejos del dock: volver a buscar '
+                                   'en vez de parar, como maximo estas veces; 0 = parar'))
+        self.gap_hold = P('data_gap_hold_s', 5.0,
+                          'Corte de odom/LiDAR/dock_status en marcha: esperar quieto '
+                          'hasta este tiempo y continuar si vuelven; 0 = parar al instante')
         self.startup_timeout = P('startup_timeout_s', 15.0,
                                  'Espera maxima de datos al arrancar [s]')
         self.run_timeout = P('run_timeout_s', 180.0,
@@ -647,6 +653,10 @@ class DockLidar(Node):
         self.state_wall_t = self.started_wall
         self.inputs_ready = False
         self.wait_reason = None
+        self.gap_start = None      # inicio de un corte de datos en marcha
+        self.n_reacquire = 0
+        self.det_miss_t = None     # primer scan sin deteccion aceptada
+        self.gap_settle = None     # fin de la espera tras recuperar datos
         self.t0 = None
         self.t_docked = None
         self.last_pose = None
@@ -744,6 +754,10 @@ class DockLidar(Node):
             raise ValueError('Se exige 0.23 <= seat_min_distance < d_floor')
         if self.sweep_max > math.radians(10.0) or self.sweep_step > self.sweep_max:
             raise ValueError('Barrido: maximo 10 grados y paso <= amplitud')
+        if not 0 <= self.reacquire_max <= 5:
+            raise ValueError('max_reacquire debe estar entre 0 y 5')
+        if not (math.isfinite(self.gap_hold) and 0.0 <= self.gap_hold <= 10.0):
+            raise ValueError('data_gap_hold_s debe estar entre 0 y 10 s')
         if self.rate < 5.0:
             log.warn(f'control_rate_hz={self.rate} es muy bajo: el Create 3 '
                      'se detiene si no recibe cmd_vel seguido. Uso 5 Hz.')
@@ -1110,6 +1124,7 @@ class DockLidar(Node):
 
         d = self.det.detect(pts, dirs, t_l, hint)
         if d is None:
+            self.detection_missed()
             return
         # Incertidumbre segun distancia al marcador (de la evaluacion
         # offline del detector: ~1 mm a 1.3 m, ~0.35 mm a 0.4 m).
@@ -1123,8 +1138,25 @@ class DockLidar(Node):
             self.last_det_t = self.wall_s()
             self.wall_observations.append(
                 (self.last_det_t, p_odom.copy(), n_odom.copy()))
+            if self.det_miss_t is not None:
+                gap = self.last_det_t - self.det_miss_t
+                msg_txt = (f'marcador detectado de nuevo tras {gap:.1f} s '
+                           f'(a {rng_m:.2f} m) en {self.state}')
+                # rclpy no admite dos severidades en la misma llamada.
+                if gap >= 1.0:
+                    self.get_logger().info(msg_txt)
+                else:
+                    self.get_logger().debug(msg_txt)
+                self.det_miss_t = None
+        else:
+            self.detection_missed()
         if self.pub_markers:
             self.publish_markers(d, Rb, pos, msg.header.stamp)
+
+    def detection_missed(self):
+        if self.det_miss_t is None and self.filt.valid:
+            self.det_miss_t = self.wall_s()
+            self.get_logger().debug(f'marcador no detectado en {self.state}')
 
     # ------------------------------------------------------------ control
     def recent_wall_distance(self, p):
@@ -1184,8 +1216,48 @@ class DockLidar(Node):
             problem = 'LiDAR ausente o antiguo'
         elif not status_fresh:
             problem = 'dock_status ausente o antiguo'
-        elif self.filt.valid and (self.last_det_t is None or
-                                 wall_now - self.last_det_t > self.det_timeout):
+        if problem is not None and self.inputs_ready and self.gap_hold > 0.0:
+            # Corte de datos en marcha (red o robot): quieto, nunca a ciegas.
+            # Si vuelven a tiempo se continua; si no, la parada de siempre.
+            self.cmd()
+            if self.gap_start is None:
+                self.gap_start = wall_now
+                self.get_logger().warn(
+                    f'datos interrumpidos: {problem}; espero quieto hasta '
+                    f'{self.gap_hold:.1f} s')
+            elif wall_now - self.gap_start > self.gap_hold:
+                self.stop(f'{problem} durante mas de {self.gap_hold:.1f} s')
+            return
+        if problem is None and self.gap_start is not None:
+            gap = wall_now - self.gap_start
+            self.gap_start = None
+            # El tiempo sin datos no cuenta como tiempo sin ver el marcador.
+            if self.last_det_t is not None:
+                self.last_det_t += gap
+            self.gap_settle = wall_now + 0.5
+            self.get_logger().warn(
+                f'datos recuperados tras {gap:.1f} s; sigo en {self.state}')
+        if problem is None and self.filt.valid and (
+                self.last_det_t is None or
+                wall_now - self.last_det_t > self.det_timeout):
+            d_est = float((pose[0] - self.filt.p) @
+                          np.array([math.cos(self.filt.a), math.sin(self.filt.a)]))
+            if (self.state in ('STAGE', 'APPROACH') and d_est > 0.6 and
+                    self.n_reacquire < self.reacquire_max):
+                # Lejos del dock: no seguir a ciegas la estimacion vieja ni
+                # abandonar la corrida. Parar, olvidar el dock y buscar otra vez.
+                self.n_reacquire += 1
+                self.get_logger().warn(
+                    f'marcador perdido {wall_now - self.last_det_t:.1f} s en '
+                    f'{self.state} lejos del dock (d~{d_est:.2f} m): vuelvo a buscar '
+                    f'({self.n_reacquire}/{self.reacquire_max})')
+                self.filt = DockFilter()
+                self.wall_observations.clear()
+                self.det_miss_t = None
+                self.set_state('SEARCH')
+                self.search_rot = 0.0
+                self.cmd()
+                return
             problem = 'marcador perdido durante demasiado tiempo'
         if problem is not None:
             self.cmd()
@@ -1195,6 +1267,12 @@ class DockLidar(Node):
                 self.wait_reason = problem
                 self.get_logger().warn(f'esperando datos: {problem}')
             return
+        if self.gap_settle is not None:
+            # Medio segundo quieto para refrescar scans y planos del muro.
+            self.cmd()
+            if wall_now < self.gap_settle:
+                return
+            self.gap_settle = None
         self.inputs_ready = True
         self.wait_reason = None
         now = self.now_s()

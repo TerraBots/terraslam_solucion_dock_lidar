@@ -1,0 +1,58 @@
+[INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/corrida-20261103-002052-ZgbH/ros/2026-11-03-00-20-54-041773-lab-kalman-1004976
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [1005017]
+[dock_lidar-1] [0m[INFO] [1793686854.608255342] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m[0m
+[dock_lidar-1] [0m[INFO] [1793686854.608691639] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg[0m
+[dock_lidar-1] [33m[WARN] [1793686854.637815845] [dock_lidar]: esperando datos: dock_status ausente o antiguo[0m
+[dock_lidar-1] [0m[INFO] [1793686855.380877180] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando[0m
+[dock_lidar-1] [0m[INFO] [1793686856.385105549] [dock_lidar]: [  1.00s] SEARCH -> STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686856.542464476] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686856.648525449] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.24 m) en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686858.341371017] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686858.446020689] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.24 m) en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686858.744821340] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686858.847367056] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.25 m) en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686862.039452794] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686862.144365197] [dock_lidar]: marcador detectado de nuevo tras 0.1 s (a 2.30 m) en STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686862.441864158] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [33m[WARN] [1793686865.381099126] [dock_lidar]: marcador perdido 3.0 s en STAGE lejos del dock (d~1.58 m): vuelvo a buscar (1/3)[0m
+[dock_lidar-1] [0m[INFO] [1793686865.381468412] [dock_lidar]: [ 10.00s] STAGE -> SEARCH[0m
+[dock_lidar-1] [0m[INFO] [1793686866.237568891] [dock_lidar]: [ 10.86s] SEARCH -> STAGE[0m
+[dock_lidar-1] [32m[DEBUG] [1793686867.036938100] [dock_lidar]: marcador no detectado en STAGE[0m
+[dock_lidar-1] [33m[WARN] [1793686869.980919384] [dock_lidar]: marcador perdido 3.0 s en STAGE lejos del dock (d~1.45 m): vuelvo a buscar (2/3)[0m
+[dock_lidar-1] [0m[INFO] [1793686869.981311068] [dock_lidar]: [ 14.60s] STAGE -> SEARCH[0m
+[dock_lidar-1] [0m[INFO] [1793686870.433490085] [dock_lidar]: [ 15.05s] SEARCH -> APPROACH[0m
+[dock_lidar-1] [32m[DEBUG] [1793686870.434007353] [dock_lidar]: d=1.447 e=+575.3mm head=-16.88deg L=0.42 v=0.140[0m
+[dock_lidar-1] [32m[DEBUG] [1793686870.934217589] [dock_lidar]: d=1.437 e=+538.9mm head=-16.94deg L=0.41 v=0.140[0m
+[dock_lidar-1] [32m[DEBUG] [1793686871.035706049] [dock_lidar]: marcador no detectado en APPROACH[0m
+[dock_lidar-1] [32m[DEBUG] [1793686871.481234949] [dock_lidar]: d=1.409 e=+479.5mm head=-11.22deg L=0.40 v=0.140[0m
+[dock_lidar-1] [32m[DEBUG] [1793686871.981454440] [dock_lidar]: d=1.376 e=+424.6mm head=-8.41deg L=0.39 v=0.140[0m
+[dock_lidar-1] [32m[DEBUG] [1793686872.531532293] [dock_lidar]: d=1.333 e=+367.3mm head=-7.08deg L=0.38 v=0.140[0m
+[dock_lidar-1] [32m[DEBUG] [1793686873.081135330] [dock_lidar]: d=1.285 e=+311.4mm head=-6.82deg L=0.36 v=0.140[0m
+[dock_lidar-1] Traceback (most recent call last):
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar", line 33, in <module>
+[dock_lidar-1]     sys.exit(load_entry_point('terraslam_solucion_dock_lidar==1.0.0', 'console_scripts', 'dock_lidar')())
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 1601, in main
+[dock_lidar-1]     rclpy.spin(node)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/__init__.py", line 229, in spin
+[dock_lidar-1]     executor.spin_once()
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 808, in spin_once
+[dock_lidar-1]     self._spin_once_impl(timeout_sec)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 805, in _spin_once_impl
+[dock_lidar-1]     raise handler.exception()
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/task.py", line 272, in _execute_coroutine_step
+[dock_lidar-1]     result = coro.send(None)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 488, in handler
+[dock_lidar-1]     await call_coroutine(entity, arg)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 407, in _execute_subscription
+[dock_lidar-1]     await await_or_execute(sub.callback, msg)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/executors.py", line 110, in await_or_execute
+[dock_lidar-1]     return callback(*args)
+[dock_lidar-1]   File "/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/python3.10/site-packages/terraslam_solucion_dock_lidar/dock_lidar.py", line 1144, in on_scan
+[dock_lidar-1]     log(f'marcador detectado de nuevo tras {gap:.1f} s '
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/impl/rcutils_logger.py", line 329, in info
+[dock_lidar-1]     return self.log(message, LoggingSeverity.INFO, **kwargs)
+[dock_lidar-1]   File "/opt/ros/humble/local/lib/python3.10/dist-packages/rclpy/impl/rcutils_logger.py", line 299, in log
+[dock_lidar-1]     raise ValueError('Logger severity cannot be changed between calls.')
+[dock_lidar-1] ValueError: Logger severity cannot be changed between calls.
+[ERROR] [dock_lidar-1]: process has died [pid 1005017, exit code 1, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_hg1k7vrm'].

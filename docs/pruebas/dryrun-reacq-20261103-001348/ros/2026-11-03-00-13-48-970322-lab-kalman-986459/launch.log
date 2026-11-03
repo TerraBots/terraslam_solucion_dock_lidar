@@ -1,0 +1,6 @@
+1793686428.9712443 [INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/dryrun-reacq-20261103-001348/ros/2026-11-03-00-13-48-970322-lab-kalman-986459
+1793686428.9713740 [INFO] [launch]: Default logging verbosity is set to INFO
+1793686429.0297582 [INFO] [dock_lidar-1]: process started with pid [986493]
+1793686434.6205041 [WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+1793686434.6213572 [INFO] [dock_lidar-1]: sending signal 'SIGINT' to process[dock_lidar-1]
+1793686434.8699360 [INFO] [dock_lidar-1]: process has finished cleanly [pid 986493]

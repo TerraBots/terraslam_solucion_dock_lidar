@@ -1,0 +1,18 @@
+{
+  "fecha": "2026-11-03T00:23:28",
+  "autorizacion": "Patrick: 'ya lo puse en la esquina, procede' (una corrida)",
+  "args": "ninguno: defaults de entrega (max_reacquire=3, data_gap_hold_s=5.0)",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial": "esquina inferior derecha (banca y pared derecha), mirando a la esquina, de espaldas al dock; ~1.7 m de la pared del dock y ~1.6 m a un lado (corridas previas desde el mismo sitio). Detecciones 0/10 al salir; obstaculo mas cercano 0.33 m. Fuera del rango del jurado en lateral.",
+  "transiciones_s": {"SEARCH->STAGE": 2.35, "STAGE->SEARCH (reacq 1/3, d~1.40)": 14.65, "SEARCH->STAGE": 15.21, "STAGE->APPROACH": 18.15, "APPROACH->DOCK": 33.50, "DOCK->WAIT_DOCK": 41.45, "WAIT_DOCK->SWEEP": 44.50, "SWEEP->CONFIRM": 45.98, "CONFIRM->DONE": 48.00},
+  "eventos": ["21.5 s: marcador detectado de nuevo tras 1.9 s (a 1.24 m) en APPROACH (sin llegar a 3 s: sin re-busqueda)"],
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": 0.4, "head_err_deg": 1.9, "is_docked": false},
+  "barrido": [
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.9, "pulso_s": 0.20, "rumbo_tras_pausa_deg": -0.5},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": -0.5, "pulso_s": 0.10, "evento": "true 0.03 s tras iniciar el pulso (rumbo quieto -0.5) -> CONFIRM -> DONE"}
+  ],
+  "datos": "Sin huecos en /odom ni /scan.",
+  "odometria": "(-0.108, -1.566, th -1.98) -> (1.160, 0.279, th 0.19)",
+  "interpretacion": "Hecho: la re-busqueda tras perder el marcador lejos del dock resolvio el caso que antes paraba (corrida 00:10); primer true a 45.98 s, DONE a 48.0 s con defaults; salida limpia; is_docked true despues. Las perdidas del marcador se dan a ~1.2-1.6 m de la pared con el robot girando o avanzando oblicuo.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

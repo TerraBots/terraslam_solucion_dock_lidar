@@ -1,0 +1,19 @@
+{
+  "fecha": "2026-11-03T00:00:28",
+  "autorizacion": "Patrick: 'listo, ya esta en la esquina, procede' (una corrida)",
+  "args": "ninguno: defaults de entrega (data_gap_hold_s=5.0)",
+  "sha256_dock_lidar_py": "586778ce1f702557d03da49497e542ee9d24d5368d30bf6962e1bf9152ce84c4",
+  "pose_inicial": "Esquina original entre la pared del dock y la lateral, mirando a la esquina, ~1.2 m a un lado del dock (fuera del rango del jurado). Scan: paredes a 0.25-0.45 m del LiDAR en el frente y los lados; detecciones 0/10.",
+  "transiciones_s": {"SEARCH->EXPLORE": 6.60, "EXPLORE->SEARCH": 14.45, "SEARCH->STAGE": 14.50, "STAGE->APPROACH": 19.25, "APPROACH->DOCK": 29.55, "DOCK->WAIT_DOCK": 35.75, "WAIT_DOCK->SWEEP": 38.80, "SWEEP->CONFIRM": 42.97, "CONFIRM->DONE": 46.00},
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": 2.1, "head_err_deg": 2.6, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "rumbo_previo_deg": 2.6, "pulso_s": 0.10, "rumbo_tras_pausa_deg": 1.0},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.0, "pulso_s": 0.15, "rumbo_tras_pausa_deg": -0.8},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": -0.8, "pulso_s": 0.10, "rumbo_tras_pausa_deg": -3.0},
+    {"objetivo": "2/8 -1.5 (intento 3)", "rumbo_previo_deg": -3.0, "pulso_s": 0.10, "evento": "true 0.07 s tras iniciar el pulso (rumbo quieto -3.0) -> CONFIRM -> DONE"}
+  ],
+  "datos": "observer.py con /scan: sin huecos > 0.3 s en /odom ni /scan; edad maxima de scan 0.13 s.",
+  "odometria": "(0.623, 1.640, th 1.36) -> (0.973, 0.229, th 0.15)",
+  "interpretacion": "Hecho: caso completo desde la esquina: SEARCH 6.6 s sin detectar, EXPLORE 7.9 s alejandose de las paredes, deteccion, STAGE, aproximacion, SWEEP; primer true a 42.97 s, DONE a 46.0 s con defaults, sin cortes de datos; salida limpia. Contacto con el robot quieto en -3.0 deg; a -0.8 no hubo true (la zona observada queda en -1..-3 deg). Los cortes de las corridas 7a y 7b no se repitieron: consistente con un problema transitorio de red, no verificado.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

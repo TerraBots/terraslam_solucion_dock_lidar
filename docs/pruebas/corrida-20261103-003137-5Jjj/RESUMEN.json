@@ -1,0 +1,17 @@
+{
+  "fecha": "2026-11-03T00:31:37",
+  "autorizacion": "Patrick: 'procede' (una corrida, punto lejano dentro del rango)",
+  "args": "ninguno: defaults de entrega",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial_pose_check": {"d_m": 1.619, "lateral_mm": -450.7, "rumbo_respecto_normal_deg": -143.48, "detecciones": "10/10", "residuo_mm": 3.47, "obstaculo_mas_cercano_m": 0.39, "nota": "junto a la banca, de espaldas al dock; dentro del rango del jurado (d<=1.95, |lateral|<=0.9)"},
+  "transiciones_s": {"SEARCH->APPROACH": 1.05, "APPROACH->DOCK": 24.00, "DOCK->WAIT_DOCK": 31.55, "WAIT_DOCK->SWEEP": 34.60, "SWEEP->CONFIRM": 36.88, "CONFIRM->DONE": 38.90},
+  "eventos": ["3.4 s: marcador detectado de nuevo tras 1.2 s (a 1.64 m) en APPROACH (sin re-busqueda)"],
+  "llegada_wait_dock": {"d_m": 0.236, "lateral_mm": 0.7, "head_err_deg": 2.4, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "rumbo_previo_deg": 2.4, "pulso_s": 0.10, "rumbo_tras_pausa_deg": 1.2},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.2, "pulso_s": 0.16, "evento": "true 0.83 s tras iniciar el pulso (ya en la pausa) -> CONFIRM -> DONE"}
+  ],
+  "datos": "Sin huecos en /odom ni /scan.",
+  "interpretacion": "Hecho: desde la salida mas lejana dentro del rango (1.62 m, 45 cm, de espaldas), primer true a 36.88 s y DONE a 38.9 s con defaults; salida limpia; is_docked true despues.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

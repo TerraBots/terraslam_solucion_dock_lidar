@@ -6,10 +6,12 @@ solo tanteando con un láser.*
 > Esta es la versión sin fórmulas. La versión técnica completa está en el
 > [README](README.md).
 
-**Estado del RBOT físico (2026-11-02): ¡funciona en el robot real!** Tres
-intentos seguidos, tres acoples con carga, incluso saliendo de costado. Ver
-la [sección 9b](#9b-en-el-robot-real). Los cambios y pruebas están en la
-[bitácora](docs/BITACORA_RBOT.md); hay 80 pruebas sin movimiento aprobadas.
+**Estado del RBOT físico (2026-11-03): ¡funciona en el robot real!** 15
+intentos. Desde todas las posiciones que el jurado puede sortear que
+probamos (8 de 8), acopló en 21–39 s: de frente, de costado, de espaldas,
+lejos y en diagonal. Ver la [sección 9b](#9b-en-el-robot-real). Los cambios
+y pruebas están en la [bitácora](docs/BITACORA_RBOT.md); hay 98 pruebas sin
+movimiento aprobadas.
 Las métricas de Gazebo de la sección 9 son históricas.
 
 **Cómo leer este documento:**
@@ -224,12 +226,13 @@ defecto: aún no se han validado físicamente.
 |---|---|
 | No ve las cajitas | Se mueve hacia el centro de la zona despejada (lejos de las paredes) y vuelve a mirar. Desde el centro las cajitas se ven de frente. |
 | Deja de verlas un momento | Usa el filtro durante un tiempo limitado; en el tramo final exige un plano reciente del muro. |
+| Deja de verlas más de 3 s lejos del cargador | Frena, olvida dónde creía que estaba y vuelve a buscarlas girando (hasta 3 veces). Nunca avanza "a ciegas". |
 | Llega al cargador torcido o descentrado | Reintenta si queda presupuesto; si no, se detiene. |
 | Llega alineado a la distancia mínima | Espera parado el estado; no retrocede por agotar esa espera. |
 | Llega bien pero no hace contacto | Gira de a poquito a cada lado (SWEEP) hasta que el robot diga "cargando". El dock real está girado unos 3° respecto a las cajitas. |
 | Recibe un BUMP | Recuperación limitada durante aproximación; parada sin retroceso durante WAIT_DOCK/SEAT. Depende de que llegue el tópico. |
 | Recibe true y después false | Reinicia la confirmación; si ya había terminado, queda en STOPPED. |
-| Pierde LiDAR, TF o estado | Se detiene y requiere relanzar. |
+| Se corta la conexión (no llegan LiDAR, odometría o estado) | Se queda quieto hasta 5 s; si los datos vuelven, sigue donde estaba. Si no, se detiene y hay que relanzar. |
 
 ---
 
@@ -250,23 +253,36 @@ donde el jurado pone el robot (incluso de espaldas al cargador):
 
 ## 9b. En el robot real
 
-El 2026-11-02 probamos en el robot de verdad (un Create 3 con su LiDAR, en el
-laboratorio de Kalman, conectados a distancia). Cada intento lo autorizó el
-operador por separado.
+El 2026-11-02 y 03 probamos en el robot de verdad (un Create 3 con su
+LiDAR, en el laboratorio de Kalman, conectados a distancia). Cada intento lo
+autorizó el operador por separado. Salvo el primero, todos usaron la
+configuración exacta que se entrega.
 
-| Intento | Desde dónde salió | Cuánto tardó | ¿Cargó? |
-|---|---|---|---|
-| 1 (despacio) | De frente, a 0,9 m, un poco torcido | 28,0 s | ✅ |
-| 2 (configuración final) | De frente, a 0,9 m | 30,8 s | ✅ |
-| 3 (configuración final) | **De costado**: mirando paralelo a la pared, 38 cm corrido | 28,6 s | ✅ |
+**Desde donde el jurado puede poner el robot:**
+
+| Intento | Desde dónde salió | Primer "cargando" |
+|---|---|---|
+| 1 (despacio) | De frente, a 0,9 m, un poco torcido | 26,0 s ✅ (cargó) |
+| 2 | De frente, a 0,9 m | 20,8 s ✅ |
+| 3 | **De costado**: mirando paralelo a la pared, 38 cm corrido | 25,6 s ✅ |
+| 4 | **De espaldas** al cargador | 28,0 s ✅ |
+| 5 | Del otro costado, 75 cm corrido | 27,0 s ✅ |
+| 6 | Lejos, mirando hacia afuera | 39,0 s ✅ |
+| 14 | **Lo más lejos posible y de espaldas** (1,6 m) | 36,9 s ✅ |
+| 15 | Cerca y en diagonal, de lado | 34,0 s ✅ |
+
+**Fuera del rango del jurado** (metido en las esquinas, pegado a dos
+paredes): acopló 3 veces (36, 43 y 46 s). Las otras 4 veces se detuvo, y
+cada una nos enseñó algo que ya corregimos (ver más abajo).
 
 Así se repartió el tiempo de cada intento (cada color es un "modo" de la
 sección 7):
 
 ![Tiempo en cada modo](docs/img/rbot_tiempos.png)
 
-Y este es el camino que hizo el robot visto desde arriba. Los tres terminan
-exactamente en el mismo punto, aunque salieron de lugares distintos:
+Y este es el camino que hizo el robot visto desde arriba. Todos terminan
+exactamente en el mismo punto, aunque salieron de lugares distintos. La zona
+verde es donde el jurado puede ponerlo:
 
 ![Caminos del robot](docs/img/rbot_trayectorias.png)
 
@@ -308,6 +324,21 @@ CONFIRM (sección 7) no se dejó engañar: exige 2 segundos seguidos de
 verdad. Después de ese intento le enseñamos un truco más: si el contacto fue
 fugaz, volver primero al ángulo exacto donde lo tuvo.
 
+### Lo que aprendimos en las esquinas
+
+**1. A veces se corta la conexión.** Dos veces dejaron de llegar los datos
+del robot durante varios segundos (como cuando se congela una videollamada).
+Antes el robot se paraba al instante y había que empezar de nuevo. Ahora
+**se queda quieto esperando** hasta 5 segundos: si la conexión vuelve, sigue
+como si nada.
+
+**2. De lejos, a veces pierde de vista las cajitas.** A más de 1,2 m, y
+mientras gira, las cajitas reciben pocos rayos del láser, y además unos
+postes del soporte del láser tapan algunas direcciones. Antes, si pasaban 3
+segundos sin verlas, el robot se rendía. Ahora **frena y vuelve a buscarlas
+girando**, como cuando uno pierde de vista algo y mira alrededor. En las
+pruebas las recuperó en menos de un segundo y medio, y acopló.
+
 ---
 
 ## 10. Las reglas que respetamos
@@ -342,6 +373,7 @@ código. Los fragmentos con `...` son esquemas abreviados, no código ejecutable
 | `recent_wall_distance` | **Distancia final** | Evalúa planos recientes del muro con la pose actual. |
 | `on_timer`, `seating_step` | **Cerebro** | Decide el estado, comprueba límites y manda movimiento o ceros. |
 | `sweep_eligible`, `start_sweep`, `sweep_tick` | **Barrido** | Gira a pulsos buscando el contacto cuando llega sin `true` (C12). |
+| `on_timer` (cortes y re-búsqueda), `detection_missed` | **Paciencia** | Espera quieto ante cortes de datos y vuelve a buscar las cajitas si se pierden lejos (C13). |
 | `cmd` | **Salida** | Aplica límites absolutos, dry-run y parada. |
 | `main` | **Arranque y cierre** | Arranca el nodo, publica ceros al cerrar y sale limpio con Ctrl-C. |
 
@@ -703,6 +735,42 @@ sale del eje (lateral > 3 cm), recibe un choque o agota la lista, se detiene
 
 ---
 
+## C13. Cortes de datos y marcador perdido (`on_timer`)
+
+En cada tick, `on_timer` revisa primero si los datos están frescos
+(odometría, LiDAR y estado del cargador). Si falta alguno **con la corrida en
+marcha**, no se rinde de inmediato:
+
+```python
+if problem is not None and self.inputs_ready and self.gap_hold > 0.0:
+    self.cmd()                                   # quieto, nunca a ciegas
+    if self.gap_start is None:
+        self.gap_start = wall_now                # empieza a contar
+    elif wall_now - self.gap_start > self.gap_hold:
+        self.stop(...)                           # más de 5 s: parada
+    return
+```
+
+Cuando los datos vuelven, descuenta el tiempo sin datos (no cuenta como
+"marcador perdido") y espera medio segundo quieto para refrescar el scan.
+
+Después mira si hace más de 3 s que no detecta las cajitas. Lejos del
+cargador vuelve a buscar en vez de parar:
+
+```python
+if (self.state in ('STAGE', 'APPROACH') and d_est > 0.6 and
+        self.n_reacquire < self.reacquire_max):
+    self.filt = DockFilter()                     # olvida la estimación vieja
+    self.set_state('SEARCH')                     # gira para encontrarlas
+```
+
+Cerca del cargador (menos de 0,6 m, o en el tramo final) perder las cajitas
+sigue deteniendo la corrida: ahí es más seguro parar que buscar.
+Parámetros: `data_gap_hold_s` (5 s) y `max_reacquire` (3); con `0` vuelven al
+comportamiento anterior.
+
+---
+
 # Parte 3 — Preguntas que les pueden hacer
 
 **¿Por qué el robot gira un poco al llegar al cargador?**
@@ -720,11 +788,19 @@ punto de contacto. Da un pulso corto, se queda quieto 1,2 s, lee el estado y
 mide el rumbo ya asentado; recién entonces decide el siguiente pulso.
 
 **¿Funcionó en el robot real?**
-Sí. El 2026-11-02 hicimos tres intentos seguidos en el Create 3 del
-laboratorio y los tres acoplaron y cargaron: 28,0 s, 30,8 s y 28,6 s, el
-último saliendo de costado (90° respecto al cargador y 38 cm corrido). Dos
-de ellos con la configuración exacta que se entrega. Los registros están en
+Sí. Hicimos 15 intentos en el Create 3 del laboratorio. Desde las 8
+posiciones dentro del rango del jurado que probamos (de frente, ambos
+costados, de espaldas, lejos y en diagonal), acopló las 8 veces, con el
+primer "cargando" entre 21 y 39 s. Desde esquinas fuera de rango acopló 3
+veces; las paradas de esas pruebas llevaron a dos mejoras (esperar ante
+cortes de conexión y volver a buscar las cajitas). Los registros están en
 `docs/pruebas/` y los gráficos en la sección 9b.
+
+**¿Por qué no lo hacen ir más rápido?**
+Según las bases, el puntaje de tiempo es completo si el promedio es de 45 s
+o menos, y ya estamos en ~30 s. Ir más rápido no suma puntos, pero sí
+arriesga la precisión (25 puntos) y el acople (50). Casi todo el tiempo se va
+en el tramo fino a 5 cm/s, que es el que deja el error en milímetros.
 
 **¿Usan alguna posición fija del mundo?**
 No. Las únicas constantes son las medidas de las cajitas (ℓ91), que el reto
@@ -753,8 +829,13 @@ las que no cuadran (ℓ467), pesa cada una según su calidad (ℓ478) y mantiene
 la estimación si se pierden las cajitas un momento.
 
 **¿Qué pasa si el robot pierde de vista las cajitas?**
-Sigue guiado por el filtro y la odometría. Si nunca las vio, explora hacia
-el centro del espacio libre (ℓ892) hasta encontrarlas.
+Sigue guiado por el filtro y la odometría unos segundos. Si las pierde más de
+3 s lejos del cargador, frena y vuelve a buscarlas (hasta 3 veces). Si nunca
+las vio, explora hacia el centro del espacio libre hasta encontrarlas.
+
+**¿Y si se corta la conexión con el robot?**
+Se queda quieto, nunca se mueve sin datos. Si vuelven en menos de 5 s,
+continúa; si no, se detiene.
 
 **¿Por qué va tan lento al final?**
 Para que el error lateral y el angular lleguen a cero antes de la rampa
@@ -789,9 +870,10 @@ probó aparte con miles de scans simulados.
 La validación histórica usó un simulador 2D para el detector (400 poses por prueba) y
 Gazebo completo: 20 poses al azar del rango del jurado, 20 de 20 acoplados,
 sin choques, 16,7 s de promedio. El "ground truth" solo se usó en los scripts
-de prueba, nunca en la solución. Después, en el robot real: tres acoples de
-tres (sección 9b). Además hay 80 pruebas automáticas sin robot que verifican
-la seguridad (límites de velocidad, paradas, el barrido).
+de prueba, nunca en la solución. Después, en el robot real: 8 de 8 dentro
+del rango del jurado (sección 9b). Además hay 98 pruebas automáticas sin
+robot que verifican la seguridad (límites de velocidad, paradas, el barrido,
+los cortes de datos y la re-búsqueda).
 
 **¿Qué ajustarían para el robot real?**
 Los valores por defecto ya son físicos: `use_sim_time=false`,

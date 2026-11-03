@@ -1,0 +1,16 @@
+{
+  "fecha": "2026-11-02T23:51:30",
+  "autorizacion": "Patrick: 'si haz el cambio, ya lo puse en la esquina, procede' (una corrida con la espera ante cortes de datos)",
+  "args": "ninguno: defaults de entrega (incluye data_gap_hold_s=5.0)",
+  "sha256_dock_lidar_py": "586778ce1f702557d03da49497e542ee9d24d5368d30bf6962e1bf9152ce84c4",
+  "pose_inicial": "zona de la esquina; la odometria inicial coincide con el final de la corrida anterior (0.529, 1.636, th -2.18): el robot arranco donde habia quedado. Detecciones 0/10.",
+  "transiciones_s": {"SEARCH->EXPLORE": 6.50, "EXPLORE->STOPPED": 17.05},
+  "eventos": [
+    "12.05 s: 'datos interrumpidos: LiDAR ausente o antiguo; espero quieto hasta 5.0 s' (cmd cero)",
+    "17.05 s: 'PARADA: LiDAR ausente o antiguo durante mas de 5.0 s'"
+  ],
+  "movimiento": "EXPLORE avanzo ~0.40 m alejandose de la esquina: odometria (0.529, 1.636) -> (0.417, 1.252).",
+  "evidencia": "observer.py (solo /odom, /dock_status, /cmd_vel en esa version) sin huecos; no registraba /scan. Sin excepciones en el nodo. Despues de la corrida /scan a 10 Hz con edad 0.10 s.",
+  "interpretacion": "Hecho: la espera ante cortes funciono como se diseno (quieto 5 s, luego parada). El LiDAR no volvio en 5 s. Hipotesis: enlace inalambrico degradado en esa zona de la sala (los dos cortes, odom y luego scan, ocurrieron en la misma zona; los scans son mensajes grandes best effort y se pierden antes que /odom). No verificado. Desde esta corrida observer.py registra la llegada y edad de cada scan.",
+  "resultado": "STOPPED sin docking (corte de datos; EXPLORE alcanzo a avanzar 0.40 m)"
+}

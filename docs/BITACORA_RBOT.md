@@ -276,6 +276,55 @@ Documentación: README (sección "Resultados en el RBOT real") y
 SOLUCION_EXPLICADA (sección 9b y C12) con figuras en `docs/img/`, generadas
 desde estos logs por `~/sim_ws/dev_tools/rbot/plots.py`.
 
+## Sesión 2026-11-02/03 (23:31–00:37) — cobertura del rango y robustez
+
+Misma reserva. Una corrida por autorización, todas con el launch sin
+argumentos salvo indicación. Detalle y evidencia en cada `RESUMEN.json`.
+
+| # | Carpeta | Salida | Rango | Resultado |
+|---|---|---|---|---|
+| 4 | `corrida-20261102-233133-eMLP` | de espaldas, ~0,93 m (0/10 detecciones al salir: postes del montaje) | sí | true 28,0 · DONE 31,0 s |
+| 5 | `corrida-20261102-233350-kHaz` | 0,86 m · +748 mm · −98° | sí | true 27,0 · DONE 29,0 s |
+| 6 | `corrida-20261102-233715-b6vJ` | ~1,2 m · ~0,75 m · mirando hacia afuera | sí | true 39,0 · DONE 41,0 s (STAGE giró ~150° a 0,4 rad/s) |
+| 7 | `corrida-20261102-234435-A7gw` | esquina superior, pegado a dos paredes | no | STOPPED 11 s: `/odom` cortado 3,55 s (visto también por el observador) |
+| 8 | `corrida-20261102-235130-ywDq` | misma zona, ya con `data_gap_hold_s` | no | espera quieto 5 s; LiDAR no volvió → STOPPED 17 s |
+| 9 | `corrida-20261102-235455-AP1n` | ~40 cm fuera de la esquina, 0/10 | no | EXPLORE → true 36,0 · DONE 39,0 s; sin huecos de datos |
+| 10 | `corrida-20261103-000028-8tOB` | esquina superior original | no | EXPLORE → true 43,0 · DONE 46,0 s |
+| 11 | `corrida-20261103-001028-NUn8` | esquina inferior: 1,66 m · 1,72 m · 139° | no | STOPPED 10 s: marcador perdido > 3 s en STAGE |
+| 12 | `corrida-20261103-002052-ZgbH` | misma, ya con `max_reacquire` | no | 2 re-búsquedas correctas; caída del nodo por `ValueError` de rclpy (severidad de log variable en una misma llamada) |
+| 13 | `corrida-20261103-002328-fYoW` | misma esquina inferior | no | 1 re-búsqueda → true 46,0 · DONE 48,0 s |
+| 14 | `corrida-20261103-003137-5Jjj` | 1,62 m · −451 mm · −143° | sí | true 36,9 · DONE 38,9 s |
+| 15 | `corrida-20261103-003440-pY7O` | ~0,7 m · ~0,9 m · de lado (cámara) | borde | 1 re-búsqueda → true 34,0 · DONE 37,0 s |
+
+Balance de la reserva: dentro del rango del jurado **8 de 8** acopladas
+(corridas 1–6, 14 y 15), primer true 20,8–39,0 s. Fuera de rango, 3 de 7.
+
+Cambios en el nodo durante la sesión (aprobados por Patrick; 98 tests):
+
+- `data_gap_hold_s` (5 s): con la corrida en marcha, la falta de TF, scans o
+  dock_status deja al robot quieto; si vuelven, 0,5 s quieto y sigue en el
+  mismo estado (el tiempo sin datos no cuenta para `detection_timeout_s`); si
+  no, la parada de siempre. `0` = comportamiento anterior.
+- `max_reacquire` (3): marcador perdido > 3 s en STAGE/APPROACH con d > 0,6 m
+  → ceros, filtro reiniciado, SEARCH. Cerca del dock sigue la parada.
+- Registro de pérdidas y recuperaciones del marcador (`marcador detectado de
+  nuevo tras X s`). El primer intento usaba la misma llamada con dos
+  severidades y provocó la caída de la corrida 12; corregido y cubierto por
+  `test_logger_severity_is_fixed_per_call_site`.
+- `observer.py` registra además llegada, edad y rayos válidos de cada scan.
+
+Hipótesis (no verificadas): los cortes de las corridas 7 y 8 fueron de la red
+en esa zona de la sala (no se repitieron con el observador de scans); las
+pérdidas del marcador a 1,2–1,6 m se deben a pocos rayos por caja, distorsión
+al girar y los sectores tapados por los postes (~±50° y trasero).
+
+Contactos observados en SWEEP: llegadas `head_err` +0,5…+2,6°, contactos
+−0,5…−3,0°. No usado por el control.
+
+Pendiente: ejercitar en el robot el retorno al rumbo de un true fugaz;
+validar (o descartar) el perfil rápido descrito en el README antes de la final
+si la final ordena por tiempo.
+
 ## Próxima reserva: validar SWEEP (ejecutado el 2026-11-02 23:07, ver arriba)
 
 1. Conectar la reserva y verificar sin movimiento con

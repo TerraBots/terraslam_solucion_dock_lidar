@@ -1,0 +1,4 @@
+1793686854.0428064 [INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/corrida-20261103-002052-ZgbH/ros/2026-11-03-00-20-54-041773-lab-kalman-1004976
+1793686854.0429189 [INFO] [launch]: Default logging verbosity is set to INFO
+1793686854.1049094 [INFO] [dock_lidar-1]: process started with pid [1005017]
+1793686873.8297591 [ERROR] [dock_lidar-1]: process has died [pid 1005017, exit code 1, cmd '/home/patrick/sim_ws/install/terraslam_solucion_dock_lidar/lib/terraslam_solucion_dock_lidar/dock_lidar --ros-args --log-level dock_lidar:=debug --ros-args -r __node:=dock_lidar --params-file /tmp/launch_params_hg1k7vrm'].

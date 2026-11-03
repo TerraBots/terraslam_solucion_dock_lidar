@@ -1,0 +1,6 @@
+[INFO] [1793686429.556677027] [dock_lidar]: dock_lidar listo | /scan -> /terraslam_validation/cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793686429.557161550] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793686429.557651962] [dock_lidar]: dry_run=true: solo se publicaran comandos cero
+[WARN] [1793686429.585363445] [dock_lidar]: esperando datos: LiDAR ausente o antiguo
+[WARN] [1793686429.685379075] [dock_lidar]: esperando datos: dock_status ausente o antiguo
+[INFO] [1793686430.385533447] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando

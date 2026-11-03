@@ -154,7 +154,10 @@ def test_single_true_never_confirms_on_timer_alone(make_node):
     node.status(True)
     node.advance(2.1, status=None)
     assert node.state == 'CONFIRM'
-    node.advance(0.5, status=None)
+    node.advance(0.5, status=None)               # dock_status cortado: quieto
+    assert node.state == 'CONFIRM'
+    assert node.last_command() == (0.0, 0.0)
+    node.advance(5.1, status=None)
     assert node.state == 'STOPPED'
     assert node.last_command() == (0.0, 0.0)
 
@@ -184,15 +187,21 @@ def test_false_resets_the_entire_confirmation_interval(make_node):
     assert node.last_command() == (0.0, 0.0)
 
 
+def lose(node, lost, seconds):
+    node.advance(seconds, status=None if lost == 'status' else False,
+                 scan=lost != 'scan', tf=lost != 'tf',
+                 detection=lost not in ('detection', 'scan'))
+
+
 @pytest.mark.parametrize('lost,timeout', [
     ('scan', 0.8), ('tf', 0.8), ('detection', 3.1), ('status', 2.6),
 ])
 def test_lost_inputs_stop_and_never_resume_automatically(make_node, lost, timeout):
-    node = make_node().ready('APPROACH', distance=1.0)
+    # Comportamiento anterior, conservado con data_gap_hold_s=0 y max_reacquire=0.
+    node = make_node(data_gap_hold_s=0.0, max_reacquire=0).ready('APPROACH', distance=1.0)
     node.on_timer()
     assert node.last_command()[0] > 0.0
-    node.advance(timeout, status=None if lost == 'status' else False,
-                 scan=lost != 'scan', tf=lost != 'tf', detection=lost != 'detection')
+    lose(node, lost, timeout)
     assert node.state == 'STOPPED'
     assert node.last_command() == (0.0, 0.0)
     node.advance(0.1)
@@ -200,9 +209,116 @@ def test_lost_inputs_stop_and_never_resume_automatically(make_node, lost, timeou
     assert node.last_command() == (0.0, 0.0)
 
 
+@pytest.mark.parametrize('lost,timeout', [('scan', 0.8), ('tf', 0.8), ('status', 2.6)])
+def test_long_data_gap_holds_still_then_stops_and_never_resumes(make_node, lost, timeout):
+    node = make_node().ready('APPROACH', distance=1.0)
+    node.on_timer()
+    first = len(node.messages)
+    lose(node, lost, timeout)
+    assert node.state == 'APPROACH'                 # esperando, no parado
+    assert node.last_command() == (0.0, 0.0)
+    for _ in range(6):
+        lose(node, lost, 1.0)
+    assert node.state == 'STOPPED'
+    assert all(m.linear.x == 0.0 and m.angular.z == 0.0 for m in node.messages[first:])
+    node.advance(0.1)
+    assert node.state == 'STOPPED'
+    assert node.last_command() == (0.0, 0.0)
+
+
+@pytest.mark.parametrize('lost,timeout', [('scan', 0.8), ('tf', 0.8), ('status', 2.6)])
+def test_short_data_gap_holds_still_and_resumes(make_node, lost, timeout):
+    # RBOT 2026-11-02 23:44: /odom se corto 3.55 s en EXPLORE y la corrida se perdio.
+    node = make_node().ready('APPROACH', distance=1.0)
+    node.on_timer()
+    assert node.last_command()[0] > 0.0
+    first = len(node.messages)
+    lose(node, lost, timeout)
+    lose(node, lost, 1.0)
+    assert node.state == 'APPROACH'
+    gap = node.messages[first:]
+    assert all(m.linear.x == 0.0 and m.angular.z == 0.0 for m in gap)
+    node.advance(0.1)                               # vuelven los datos
+    assert node.last_command() == (0.0, 0.0)        # medio segundo quieto
+    assert any('datos recuperados' in str(m) for m in node.logs)
+    node.advance(0.3)
+    assert node.last_command() == (0.0, 0.0)
+    node.advance(0.3)
+    assert node.state == 'APPROACH'
+    assert node.last_command()[0] > 0.0
+
+
+def test_lidar_gap_longer_than_detection_timeout_does_not_count_as_marker_lost(make_node):
+    node = make_node().ready('APPROACH', distance=1.0)
+    node.on_timer()
+    lose(node, 'scan', 4.0)                         # > detection_timeout_s = 3
+    assert node.state == 'APPROACH'
+    node.advance(0.1)
+    node.advance(0.6)
+    assert node.state == 'APPROACH'
+    assert node.last_command()[0] > 0.0
+
+
+@pytest.mark.parametrize('state', ['STAGE', 'APPROACH'])
+def test_marker_lost_far_from_dock_searches_again_instead_of_stopping(make_node, state):
+    # RBOT 2026-11-03 00:10: a ~2.4 m las detecciones se cortaron >3 s en STAGE.
+    node = make_node().ready(state, distance=1.5, lateral=0.3)
+    node.on_timer()
+    first = len(node.messages)
+    lose(node, 'detection', 3.1)
+    assert node.state == 'SEARCH'
+    assert not node.filt.valid                       # olvida la estimacion vieja
+    assert node.last_command() == (0.0, 0.0)
+    assert any('vuelvo a buscar (1/3)' in str(m) for m in node.logs)
+    for _ in range(10):
+        lose(node, 'detection', 0.1)
+    assert all(m.linear.x == 0.0 for m in node.messages[first:])   # sin avanzar a ciegas
+    assert node.last_command()[1] != 0.0                             # gira buscando
+    node.filt.update(np.array([1.5, 0.0]), math.pi, 0.005, 0.005)   # vuelve a verlo
+    node.advance(0.1)
+    assert node.state in ('STAGE', 'APPROACH')
+
+
+def test_marker_reacquisition_is_limited(make_node):
+    node = make_node(max_reacquire=2).ready('APPROACH', distance=1.5)
+    for k in range(2):
+        node.on_timer()
+        lose(node, 'detection', 3.1)
+        assert node.state == 'SEARCH'
+        node.ready('APPROACH', distance=1.5)
+    node.on_timer()
+    lose(node, 'detection', 3.1)
+    assert node.state == 'STOPPED'
+    assert node.last_command() == (0.0, 0.0)
+
+
+@pytest.mark.parametrize('state,distance', [('APPROACH', 0.5), ('DOCK', 0.3)])
+def test_marker_lost_near_the_dock_still_stops(make_node, state, distance):
+    node = make_node().ready(state, distance=distance)
+    node.on_timer()
+    lose(node, 'detection', 3.1)
+    assert node.state == 'STOPPED'
+    assert node.last_command() == (0.0, 0.0)
+
+
+@pytest.mark.parametrize('value', [-1, 6])
+def test_invalid_max_reacquire_is_rejected(make_node, value):
+    with pytest.raises(ValueError):
+        make_node(max_reacquire=value)
+
+
+@pytest.mark.parametrize('value', [-1.0, 10.5, float('nan')])
+def test_invalid_data_gap_hold_is_rejected(make_node, value):
+    with pytest.raises(ValueError):
+        make_node(data_gap_hold_s=value)
+
+
 def test_wall_watchdog_stops_even_if_ros_clock_freezes(make_node):
     node = make_node().ready('APPROACH', distance=1.0)
     node.wall_now += 1.0
+    node.on_timer()
+    assert node.last_command() == (0.0, 0.0)        # quieto al instante
+    node.wall_now += 5.1
     node.on_timer()
     assert node.state == 'STOPPED'
     assert node.last_command() == (0.0, 0.0)
@@ -798,3 +914,18 @@ def test_sweep_starts_when_resting_slightly_above_the_floor(make_node):
     node.filt.p[0] = 0.244
     node.advance(3.1)
     assert node.state == 'SWEEP'
+
+
+def test_logger_severity_is_fixed_per_call_site():
+    # rclpy lanza ValueError si una misma llamada cambia de severidad
+    # (RBOT 2026-11-03 00:21: el nodo cayo en APPROACH por esto).
+    import ast
+    tree = ast.parse(open(module.__file__).read())
+
+    def is_logger_method(node):
+        return (isinstance(node, ast.Attribute) and isinstance(node.value, ast.Call) and
+                getattr(node.value.func, 'attr', '') == 'get_logger')
+
+    bad = [n.lineno for n in ast.walk(tree)
+           if isinstance(n, ast.IfExp) and (is_logger_method(n.body) or is_logger_method(n.orelse))]
+    assert not bad, f'severidad de log variable en lineas {bad}'

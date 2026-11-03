@@ -1,0 +1,12 @@
+[INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/corrida-20261102-234435-A7gw/ros/2026-11-02-23-44-37-299374-lab-kalman-905871
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [dock_lidar-1]: process started with pid [905889]
+[dock_lidar-1] [0m[INFO] [1793684677.925513134] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.14 m/s, w_max 0.40 rad/s, v_fine 0.050, v_dock 0.035 | range_sigma 0.010 m[0m
+[dock_lidar-1] [0m[INFO] [1793684677.926024287] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=3.0 s confirmacion=2.0 s | barrido=+-6.0 deg[0m
+[dock_lidar-1] [33m[WARN] [1793684677.950418797] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo[0m
+[dock_lidar-1] [33m[WARN] [1793684678.057418877] [dock_lidar]: esperando datos: dock_status ausente o antiguo[0m
+[dock_lidar-1] [0m[INFO] [1793684678.399953975] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando[0m
+[dock_lidar-1] [0m[INFO] [1793684684.950728380] [dock_lidar]: [  6.55s] SEARCH -> EXPLORE[0m
+[dock_lidar-1] [31m[ERROR] [1793684689.450466360] [dock_lidar]: PARADA: TF de odometria ausente o antiguo. Relanza para otra corrida.[0m
+[dock_lidar-1] [0m[INFO] [1793684689.450899187] [dock_lidar]: [ 11.05s] EXPLORE -> STOPPED[0m
+[INFO] [dock_lidar-1]: process has finished cleanly [pid 905889]
