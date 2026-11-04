@@ -114,13 +114,26 @@ Pendiente de ejercitar en el robot: el retorno al rumbo de un `true` fugaz
 
 ### Qué ejecutar
 
-La configuración validada en el RBOT es el launch **sin argumentos**:
+**Elección del equipo para la final: el perfil rápido** (validado 5 de 5 en
+el RBOT, primer `true` a 22,6 s de media), con 10 s de margen ante cortes de
+red:
 
 ```bash
 source /opt/ros/humble/setup.bash
 source ~/sim_ws/install/setup.bash
-ros2 launch terraslam_solucion_dock_lidar solucion.launch.py
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
+  v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18 \
+  data_gap_hold_s:=10.0
 ```
+
+Alternativa de respaldo, la configuración de entrega (8 de 8 dentro del rango
+del jurado, ~30 s de media):
+
+```bash
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py data_gap_hold_s:=10.0
+```
+
+Usar el mismo perfil en las 3 corridas de una ronda.
 
 Antes de la primera corrida:
 
