@@ -179,26 +179,43 @@ rápido, vale la pena el perfil de abajo, pero solo después de validarlo.
 
 Subir `v_max` casi no cambia nada: el tramo fino domina.
 
-**Perfil rápido candidato (validación en curso: 1 de 5 corridas)**, solo
-con argumentos del launch, sin tocar el código:
+**Perfil rápido (validado en el RBOT: 5 de 5)**, solo con argumentos del
+launch, sin tocar el código:
 
 ```bash
 ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
   v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18
 ```
 
-Ahorro estimado: ~5–7 s por corrida (tramo fino ~4,5 s, espera 1 s, giros
-~1 s). No toca `v_dock` ni `d_floor`, que están calibrados juntos con el
-robot acoplado. Riesgos: menos tiempo para corregir el lateral y el rumbo
-antes de la rampa, y más distorsión del scan al girar a 0,5 rad/s. **Usarlo
-solo si en una reserva previa acopla en al menos 5 corridas seguidas**,
-incluyendo de espaldas y lejos, con la misma precisión. Si no hay reserva
-para validarlo, usar la configuración de entrega.
+Ahorro estimado antes de probarlo: ~5–7 s por corrida (tramo fino ~4,5 s,
+espera 1 s, giros ~1 s); medido: 7,2 s de media. No toca `v_dock` ni
+`d_floor`, que están calibrados juntos con el robot acoplado. Riesgos que se
+vigilaron: menos tiempo para corregir el lateral y el rumbo antes de la
+rampa, y más distorsión del scan al girar a 0,5 rad/s. El requisito fijado
+antes de usarlo (5 corridas seguidas acopladas, incluidas de espaldas y
+lejos, con la misma precisión) **se cumplió el 2026-11-03**.
 
-Estado al 2026-11-03: una corrida completa, frontal, con primer `true` a los
-16,8 s (frente a 20,8–26,0 s con la configuración de entrega) y lateral de
-llegada de 2,9 mm. Otros dos intentos se cortaron por la conexión. Las
-pruebas que faltan están en la [bitácora](docs/BITACORA_RBOT.md#pruebas-pendientes-para-la-próxima-reserva).
+Validación del 2026-11-03 (con `data_gap_hold_s:=10.0`), mismas poses que
+la configuración de entrega:
+
+| Pose | Entrega (primer true) | **Rápido (primer true · DONE)** | Lateral al llegar |
+|---|---|---|---|
+| frontal ~1 m | 20,8–26,0 s | **16,8 · 19,9 s** | 2,9 mm |
+| de espaldas ~1 m | 28,0 s | **17,0 · 20,0 s** | 0,1 mm |
+| lejos de espaldas (1,44–1,62 m) | 36,9 s | **25,0 · 27,0 s** | 1,0 mm |
+| costado (~0,85 m, 66–75 cm a un lado) | 25,6–27,0 s | **28,0 · 31,0 s** | 0,1 mm |
+| cercana y oblicua | 34,0 s | **26,0 · 29,0 s** | 0,5 mm |
+
+**5 de 5 acopladas**, la misma precisión (≤ 2,9 mm y ≤ 1,8° al llegar) y
+**7,2 s menos de media** al primer `true` (22,6 s frente a 29,7 s). En el
+costado no ganó tiempo. Detalle en la [bitácora](docs/BITACORA_RBOT.md).
+Si la final ordena por tiempo, este perfil es la opción recomendada:
+
+```bash
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
+  v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18 \
+  data_gap_hold_s:=10.0
+```
 
 **Margen ante cortes de red:** en una red inestable conviene añadir
 `data_gap_hold_s:=10.0` (máximo permitido): el robot espera quieto hasta 10 s

@@ -345,6 +345,30 @@ con un lateral de llegada algo mayor (2,9 mm frente a 0,4–1,5 mm). Durante el
 corte de 8 s el nodo publicó 157 comandos, todos cero, y la odometría no
 registró desplazamiento. Las dos paradas se deben a la conexión, no al perfil.
 
+## Sesión 2026-11-03 (23:43–23:56) — perfil rápido validado (5/5)
+
+La conexión volvió a las 23:43 con edades de ~0,1 s (scans) y ~0,02 s
+(odom); no hubo cortes en estas corridas. Perfil rápido + `data_gap_hold_s:=10.0`.
+
+| Prueba | Corrida | Salida | Primer true · DONE | Llegada (lateral, rumbo) | Referencia de entrega (primer true) |
+|---|---|---|---|---|---|
+| R1 | `corrida-20261103-231424-11Yq` | frontal 0,99 m | **16,8 · 19,9 s** | −2,9 mm, +1,8° | 20,8–26,0 s (corridas 1–2) |
+| R2 | `corrida-20261103-234459-b844` | de espaldas ~1 m | **17,0 · 20,0 s** (sin barrido) | +0,1 mm, −0,3° | 28,0 s (corrida 4) |
+| R3 | `corrida-20261103-235217-0WVc` | de espaldas 1,44 m · −361 mm | **25,0 · 27,0 s** | +1,0 mm, +1,8° | 36,9 s (corrida 14, desde 1,62 m) |
+| R4 | `corrida-20261103-235457-mdsj` | costado 0,84 m · +656 mm · +92° | **28,0 · 31,0 s** | −0,1 mm, +1,3° | 25,6–27,0 s (corridas 3 y 5) |
+| R5 | `corrida-20261103-234803-ahHs` | cercana y oblicua (~0,7 m · ~0,85 m) | **26,0 · 29,0 s** | −0,5 mm, +0,7° | 34,0 s (corrida 15) |
+
+Resultado: **5/5 DONE**, lateral de llegada ≤ 2,9 mm, rumbo ≤ 1,8°, sin
+re-búsquedas (en R5 y R4 el marcador se perdió < 3 s y se recuperó solo),
+comandos dentro de 0,18 m/s y 0,50 rad/s. Media al primer true **22,6 s**
+frente a **29,7 s** con la configuración de entrega en las mismas poses:
+**−7,2 s**. En R4 no hubo ganancia (STAGE de 7,9 s y barrido de tres
+intentos). Cumple el criterio de adopción definido abajo.
+
+Pendiente de decisión de Patrick: usar el perfil como argumentos del launch
+en la final o pasarlo a defaults (nodo, launch y test de defaults), y lo
+mismo con `data_gap_hold_s=10`.
+
 ## Pruebas pendientes (para la próxima reserva)
 
 Siempre una corrida por autorización, verificando antes la pose solo con
@@ -362,10 +386,12 @@ datos y se cortó dos veces.
 | Prueba | Pose | Referencia con la configuración de entrega (primer true) | Estado |
 |---|---|---|---|
 | R1 | frontal, ~1 m | 20,8–26,0 s (corridas 1–2) | ✅ 16,8 s |
-| R2 | de espaldas, ~1 m | 28,0 s (corrida 4) | ⏳ 2 intentos cortados por la red |
-| R3 | lejos de espaldas, junto a la banca (~1,6 m, ≤0,9 m a un lado) | 36,9 s (corrida 14) | ⏳ |
-| R4 | costado, ~1 m y 40–75 cm a un lado, paralelo a la pared | 25,6–27,0 s (corridas 3 y 5) | ⏳ |
-| R5 | cercana y oblicua (~0,7 m de la pared, ~0,9 m a un lado) | 34,0 s (corrida 15) | ⏳ |
+| R2 | de espaldas, ~1 m | 28,0 s (corrida 4) | ✅ 17,0 s (tras 2 intentos cortados por la red) |
+| R3 | lejos de espaldas, junto a la banca (~1,6 m, ≤0,9 m a un lado) | 36,9 s (corrida 14) | ✅ 25,0 s (desde 1,44 m) |
+| R4 | costado, ~1 m y 40–75 cm a un lado, paralelo a la pared | 25,6–27,0 s (corridas 3 y 5) | ✅ 28,0 s |
+| R5 | cercana y oblicua (~0,7 m de la pared, ~0,9 m a un lado) | 34,0 s (corrida 15) | ✅ 26,0 s |
+
+**Completado el 2026-11-03: 5/5.** Queda solo la decisión de cómo usarlo.
 
 Criterio para adoptarlo: **5 de 5 DONE**, lateral de llegada ≤ 3 mm y rumbo
 dentro de ±3°, sin oscilaciones ni re-búsquedas extra respecto a la

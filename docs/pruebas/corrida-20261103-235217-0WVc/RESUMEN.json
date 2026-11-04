@@ -1,0 +1,19 @@
+{
+  "fecha": "2026-11-03T23:52:17",
+  "autorizacion": "Patrick: 'ahora ta aca, procede' (una corrida, perfil rapido R3)",
+  "args": "PERFIL RAPIDO + data_gap_hold_s:=10.0",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial_pose_check": {"d_m": 1.438, "lateral_mm": -360.6, "rumbo_respecto_normal_deg": -154.46, "detecciones": "10/10", "obstaculo_mas_cercano_m": 0.57, "nota": "de espaldas, mirando a la banca; dentro del rango del jurado"},
+  "transiciones_s": {"SEARCH->APPROACH": 1.05, "APPROACH->DOCK": 16.00, "DOCK->WAIT_DOCK": 22.15, "WAIT_DOCK->SWEEP": 24.16, "SWEEP->CONFIRM": 24.96, "CONFIRM->DONE": 27.00},
+  "eventos": ["2.8 s: marcador detectado de nuevo tras 1.1 s (a 1.44 m) en APPROACH"],
+  "llegada_wait_dock": {"d_m": 0.2382, "lateral_mm": 1.0, "head_err_deg": 1.8, "is_docked": false},
+  "barrido": [
+    {"objetivo": "1/8 +1.5", "nota": "ya dentro de 0.5 deg: sin pulso"},
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.8, "pulso_s": 0.19, "evento": "true 0.76 s tras iniciar el pulso -> CONFIRM -> DONE"}
+  ],
+  "comandos": "max |v| 0.176 m/s, max |w| 0.500 rad/s",
+  "datos": "Sin huecos en /odom ni /scan.",
+  "comparacion": "Configuracion de entrega desde 1.62 m de espaldas (corrida 14): primer true 36.9 s. Aqui 24.96 s desde 1.44 m (la salida es ~0.18 m mas cercana: ~1-2 s del ahorro).",
+  "interpretacion": "Hecho: DONE con el perfil rapido; salida limpia; is_docked true despues. Llegada centrada (1.0 mm). Perfil rapido: 4/5 corridas completas (R1, R2, R3, R5).",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

@@ -1,0 +1,15 @@
+{
+  "fecha": "2026-11-03T23:44:59",
+  "autorizacion": "Patrick: 'ya esta de espaldas a 1m, procede' (una corrida, perfil rapido R2)",
+  "args": "PERFIL RAPIDO + data_gap_hold_s:=10.0",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial": "de espaldas a ~1 m; pose_check 0/10 detecciones (sector trasero tapado); nada a menos de 0.6 m. Primera telemetria: d=0.957 m, lateral -10.8 mm, head_err +139.8 deg.",
+  "edades_datos_s": {"scan_p50": 0.096, "odom_p50": 0.021, "dock_p50": -0.006},
+  "transiciones_s": {"SEARCH->APPROACH": 2.05, "APPROACH->DOCK": 12.55, "DOCK->WAIT_DOCK": 16.10, "WAIT_DOCK->CONFIRM": 16.99, "CONFIRM->DONE": 20.00},
+  "llegada_wait_dock": {"d_m": 0.2377, "lateral_mm": 0.1, "head_err_deg": -0.3, "is_docked": "true a los 0.89 s de esperar (sin barrido)"},
+  "comandos": "max |v| 0.166 m/s, max |w| 0.500 rad/s",
+  "datos": "Sin huecos en /odom ni /scan.",
+  "comparacion": "Configuracion de entrega desde de espaldas ~0.93 m (corrida 4): primer true 28.0 s, DONE 31.0 s. Aqui 16.99 / 20.00 s (parte del ahorro viene de llegar con rumbo -0.3 deg y acoplar sin barrido).",
+  "interpretacion": "Hecho: DONE con el perfil rapido; salida limpia; is_docked true despues. Llegada centrada (0.1 mm). Perfil rapido: 2/5 corridas completas.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

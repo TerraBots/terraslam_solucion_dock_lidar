@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-11-03T23:54:57",
+  "autorizacion": "Patrick: 'ya esta en R4, procede' (una corrida, perfil rapido R4)",
+  "args": "PERFIL RAPIDO + data_gap_hold_s:=10.0",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial_pose_check": {"d_m": 0.837, "lateral_mm": 655.8, "rumbo_respecto_normal_deg": 92.31, "detecciones": "10/10", "residuo_mm": 5.26, "nota": "paralelo a la pared, a la derecha del dock"},
+  "transiciones_s": {"SEARCH->STAGE": 1.01, "STAGE->APPROACH": 8.90, "APPROACH->DOCK": 17.16, "DOCK->WAIT_DOCK": 23.00, "WAIT_DOCK->SWEEP": 25.05, "SWEEP->CONFIRM": 27.99, "CONFIRM->DONE": 31.00},
+  "eventos": ["3.0 s: marcador detectado de nuevo tras 1.2 s (a 1.01 m) en STAGE"],
+  "llegada_wait_dock": {"d_m": 0.2383, "lateral_mm": -0.1, "head_err_deg": 1.3, "is_docked": false},
+  "barrido": [
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.3, "pulso_s": 0.16, "rumbo_tras_pausa_deg": -0.6},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": -0.6, "pulso_s": 0.10, "rumbo_tras_pausa_deg": -1.6},
+    {"objetivo": "3/8 +3.0", "rumbo_previo_deg": -1.6, "pulso_s": 0.27, "evento": "true 0.14 s tras iniciar el pulso (rumbo quieto -1.6) -> CONFIRM -> DONE"}
+  ],
+  "comandos": "max |v| 0.180 m/s, max |w| 0.500 rad/s",
+  "datos": "Sin huecos en /odom ni /scan.",
+  "comparacion": "Configuracion de entrega desde costado (corrida 5: 0.86 m, +748 mm, -98 deg): primer true 27.0 s (STAGE 3.65 s, APPROACH 12.4 s, barrido 1.4 s). Aqui 27.99 s: STAGE 7.9 s y barrido de 3 intentos (2.9 s) compensaron el avance mas rapido.",
+  "interpretacion": "Hecho: DONE con el perfil rapido; salida limpia; is_docked true despues. Llegada centrada (0.1 mm). Sin ganancia de tiempo en esta pose. Perfil rapido: 5/5 corridas completas.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}
