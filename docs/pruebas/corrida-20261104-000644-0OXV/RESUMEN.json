@@ -1,0 +1,23 @@
+{
+  "fecha": "2026-11-04T00:06:44",
+  "autorizacion": "Patrick: 'si quieres prueba el turbo aca lo puse' (una corrida, turbo 1/5)",
+  "args": "TURBO: v_fine:=0.09 d_fine:=0.50 dock_wait_s:=1.5 w_max:=0.5 w_search:=0.5 v_max:=0.20 data_gap_hold_s:=10.0",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial": "junto a la banca, de espaldas al dock (camara); pose_check 0/10 detecciones (sector trasero); banca a 0.39 m por delante. Primera telemetria: d=1.605 m, lateral -501 mm, head_err +119.8 deg. Equivale a R3.",
+  "transiciones_s": {"SEARCH->APPROACH": 1.30, "APPROACH->DOCK": 13.65, "DOCK->WAIT_DOCK": 18.85, "WAIT_DOCK->SWEEP": 20.40, "SWEEP->CONFIRM": 21.95, "CONFIRM->WAIT_DOCK (true fugaz)": 23.00, "WAIT_DOCK->SWEEP (reanudado)": 24.55, "SWEEP->CONFIRM": 33.96, "CONFIRM->DONE": 37.00},
+  "llegada_wait_dock": {"d_m": 0.230, "lateral_mm": -0.8, "head_err_deg": 1.3, "is_docked": false},
+  "barrido": [
+    "2/8 -1.5: desde +1.3 -> -1.2",
+    "3/8 +3.0: pulso desde -1.2; true 0.05 s despues (rumbo quieto -1.2) -> CONFIRM; true fugaz -> WAIT_DOCK",
+    "reanudo: 'vuelvo al rumbo del ultimo contacto -1.2deg' (primera vez en el robot)",
+    "3/9 -1.2: -0.7 -> pulso minimo -> -2.6 (se paso 1.4 deg) -> sin true",
+    "4/9 +3.0: -0.9 -> +1.1 -> +1.8 (3 intentos)",
+    "5/9 -3.0: +2.6 -> -2.2; true en la pausa -> CONFIRM -> DONE"
+  ],
+  "comandos": "max |v| 0.198 m/s, max |w| 0.500 rad/s",
+  "datos": "Sin huecos en /odom ni /scan.",
+  "comparacion": "Llegada al contacto 18.85 s desde ~1.6 m: la mas rapida de todas (rapido R3: 22.15 s desde 1.44 m; entrega corrida 14: 31.55 s desde 1.62 m). Primer true 21.95 s (fugaz); estable 33.96 s; DONE 37.0 s (rapido R3: 25.0 / 27.0 s).",
+  "hallazgo": "El retorno al rumbo del true fugaz funciono como se diseno, pero el pulso minimo (0.1 s a 0.3 rad/s, ~1.7-1.9 deg) es mayor que la tolerancia del objetivo (0.5 deg): al corregir 0.5 deg se paso a -2.6 y perdio el contacto. Mismo efecto de 'dithering' visto en otras corridas (2-3 intentos por objetivo).",
+  "interpretacion": "Hecho: DONE con el turbo, salida limpia, is_docked true despues. La aproximacion fue ~3 s mas rapida que el perfil rapido, pero el true fugaz y el barrido posterior anularon la ganancia en DONE. Con una sola corrida no se puede atribuir el true fugaz al turbo (ya ocurrio con la configuracion de entrega, corrida 2). Turbo: 1/5, no validado.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

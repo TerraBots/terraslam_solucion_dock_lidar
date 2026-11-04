@@ -243,7 +243,11 @@ Riesgos: menos recorrido para corregir el lateral y el rumbo antes de la
 rampa (precisión) y entrada a la rampa más rápida. **Usarlo solo si se valida
 5 de 5 en el robot** con la misma precisión que el perfil rápido (≤ 3 mm al
 llegar), igual que se hizo con este, y solo si la final ordena por tiempo. Sin
-esa validación, el perfil rápido es la opción. Por debajo del turbo no queda
+esa validación, el perfil rápido es la opción. Primera prueba (2026-11-04, de espaldas
+a ~1,6 m): llegó al contacto en 18,9 s, la llegada más rápida registrada,
+pero un `true` fugaz y el barrido posterior llevaron el DONE a 37,0 s (el
+perfil rápido, desde la misma pose, 27,0 s). Va 1 de 5; sin ventaja
+demostrada. Por debajo del turbo no queda
 margen sin superar 0,20 m/s y 0,50 rad/s o recalibrar la rampa con el robot
 acoplado.
 

@@ -369,6 +369,45 @@ Pendiente de decisión de Patrick: usar el perfil como argumentos del launch
 en la final o pasarlo a defaults (nodo, launch y test de defaults), y lo
 mismo con `data_gap_hold_s=10`.
 
+## Sesión 2026-11-04 (00:06) — primera prueba del perfil turbo
+
+`corrida-20261104-000644-0OXV`, turbo (`v_fine:=0.09 d_fine:=0.50
+dock_wait_s:=1.5 w_max:=0.5 w_search:=0.5 v_max:=0.20 data_gap_hold_s:=10.0`),
+de espaldas junto a la banca (equivalente a R3, ~1,6 m, −0,5 m lateral).
+
+- Llegada al contacto a los **18,9 s** (la más rápida registrada), lateral
+  −0,8 mm.
+- Primer true a los 21,95 s, **fugaz** (CONFIRM → WAIT_DOCK a 1 s).
+- Primera activación en el robot del retorno al rumbo del último contacto
+  (−1,2°): el pulso mínimo lo llevó a −2,6° y perdió el contacto; siguió el
+  barrido y acopló estable en −2,2° a los 34,0 s; **DONE 37,0 s**.
+- Turbo: 1/5, no validado; no mostró ventaja al DONE frente al perfil rápido
+  desde la misma pose (25,0 / 27,0 s). El true fugaz no se puede atribuir al
+  turbo (ya ocurrió con la configuración de entrega, corrida 2).
+
+## Mejora evaluada y aplazada: tolerancia del barrido (2026-11-04)
+
+Hallazgo: el pulso mínimo del barrido (0,1 s a 0,3 rad/s) gira ~1,4–1,9°,
+pero un objetivo se da por alcanzado solo con |error| ≤ 0,5°
+(`dock_lidar.py`, `sweep_tick`, dos comparaciones con `math.radians(0.5)`).
+Al corregir medio grado el robot se pasa; de ahí los 2–3 intentos por objetivo
+en varias corridas y que en la corrida turbo no pudiera volver al rumbo del
+contacto fugaz.
+
+Evaluación con las 17 corridas acopladas: el barrido tarda de media 2,2 s
+hasta el primer true (0–4 pulsos). Con tolerancia 1° se habrían evitado 10
+pulsos en total (~0,8 s por corrida en el mejor caso). Pero varios de esos
+pulsos cortos fueron los que llevaron al contacto (contactos observados en
+−0,5…−3,0°; sin contacto en −0,8° una vez), así que el efecto neto es incierto
+(−0,8 s a +1 s). El cambio afecta a todos los perfiles y dejaría sin validar
+en el robot las 8/8 (entrega) y 5/5 (rápido) hechas con el código actual.
+
+**Decisión de Patrick (2026-11-04): no cambiarlo antes de la final.** Queda
+como mejora para después, o solo si sobra una reserva completa antes del
+viernes (cambio + tests + 3–5 corridas de revalidación). Alternativas a
+estudiar entonces: tolerancia ~1° (la mitad del paso mínimo), o tolerancia
+mayor solo para el objetivo de retorno al contacto.
+
 ## Pruebas pendientes (para la próxima reserva)
 
 Siempre una corrida por autorización, verificando antes la pose solo con
