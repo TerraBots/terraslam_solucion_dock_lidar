@@ -411,6 +411,12 @@ ocurrió en el robot. No requiere una prueba dedicada: registrar si aparece.
 tiempo en la final (si basta ≤45 s o se ordena por el más rápido). Eso
 decide si el perfil rápido vale la pena.
 
+**5. Opcional: perfil "turbo"** (README, sección "En la competencia"):
+`v_fine:=0.09 d_fine:=0.50 dock_wait_s:=1.5 w_max:=0.5 w_search:=0.5
+v_max:=0.20 data_gap_hold_s:=10.0`. Ahorro estimado ~2–3 s sobre el rápido,
+sin medir. Solo si la final ordena por tiempo; validar 5/5 con las mismas
+poses R1–R5 y el mismo criterio (lateral ≤ 3 mm) antes de usarlo.
+
 ## Próxima reserva: validar SWEEP (ejecutado el 2026-11-02 23:07, ver arriba)
 
 1. Conectar la reserva y verificar sin movimiento con

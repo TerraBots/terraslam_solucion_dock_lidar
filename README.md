@@ -217,6 +217,36 @@ ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
   data_gap_hold_s:=10.0
 ```
 
+**Perfil "turbo" (NO validado en el robot).** Dónde se va hoy el tiempo del
+perfil rápido (media de sus 5 corridas, 22,5 s al primer `true`) y qué margen
+queda:
+
+| Tramo | Tiempo | ¿Se puede acelerar? |
+|---|---|---|
+| Búsqueda y colocación frente al dock | 4,5 s (hasta 9 s desde el costado) | No: ya gira a 0,50 rad/s, el tope de todos los estados. |
+| Aproximación | 9,6 s | Algo: tramo fino más corto y más rápido. |
+| Rampa | 4,8 s | No sin recalibrar: `v_dock` está calibrado junto a `d_floor`. |
+| Espera antes del barrido | 1,8 s | ~0,5 s. |
+| Barrido | 1,8 s | No: `dock_status` llega a 1 Hz. Empezar por el lado donde suele acoplar sería calibrar el ángulo de este dock. |
+
+Candidato que exprime ese margen. Pasa la validación de parámetros y respeta
+los límites en las pruebas sin robot; **ahorro estimado ~2–3 s más (≈20 s
+de media), sin medir**:
+
+```bash
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
+  v_fine:=0.09 d_fine:=0.50 dock_wait_s:=1.5 w_max:=0.5 w_search:=0.5 v_max:=0.20 \
+  data_gap_hold_s:=10.0
+```
+
+Riesgos: menos recorrido para corregir el lateral y el rumbo antes de la
+rampa (precisión) y entrada a la rampa más rápida. **Usarlo solo si se valida
+5 de 5 en el robot** con la misma precisión que el perfil rápido (≤ 3 mm al
+llegar), igual que se hizo con este, y solo si la final ordena por tiempo. Sin
+esa validación, el perfil rápido es la opción. Por debajo del turbo no queda
+margen sin superar 0,20 m/s y 0,50 rad/s o recalibrar la rampa con el robot
+acoplado.
+
 **Margen ante cortes de red:** en una red inestable conviene añadir
 `data_gap_hold_s:=10.0` (máximo permitido): el robot espera quieto hasta 10 s
 en vez de 5 antes de dar la corrida por perdida. El 2026-11-03 hubo un corte
