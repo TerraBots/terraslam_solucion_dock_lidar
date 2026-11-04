@@ -1,0 +1,20 @@
+{
+  "fecha": "2026-11-03T23:14:24",
+  "autorizacion": "Patrick: 'procede esta a 1m' (una corrida, perfil rapido 1/5)",
+  "args": "PERFIL RAPIDO: v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18 (resto defaults)",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial_pose_check": {"d_m": 0.986, "lateral_mm": 10.6, "rumbo_respecto_normal_deg": -2.15, "detecciones": "10/10"},
+  "edades_datos_s": {"scan_p50": 0.279, "odom_p50": 0.207, "dock_p50": 0.179},
+  "transiciones_s": {"SEARCH->APPROACH": 1.05, "APPROACH->DOCK": 7.65, "DOCK->WAIT_DOCK": 11.55, "WAIT_DOCK->SWEEP": 13.60, "SWEEP->CONFIRM": 16.84, "CONFIRM->DONE": 19.86},
+  "llegada_wait_dock": {"d_m": 0.238, "lateral_mm": -2.9, "head_err_deg": 1.8, "is_docked": false},
+  "barrido": [
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.8, "pulso_s": 0.19, "rumbo_tras_pausa_deg": 0.3},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": 0.3, "pulso_s": 0.10, "rumbo_tras_pausa_deg": -1.8},
+    {"objetivo": "3/8 +3.0", "rumbo_previo_deg": -1.8, "pulso_s": 0.28, "evento": "true 0.39 s tras iniciar el pulso (rumbo quieto -1.8) -> CONFIRM -> DONE"}
+  ],
+  "comandos": "max |v| 0.180 m/s, max |w| 0.300 rad/s (dentro de 0.20/0.50)",
+  "datos": "Sin huecos en /odom; un hueco de 0.31 s en /scan.",
+  "comparacion": "Configuracion de entrega desde pose frontal ~1 m: primer true 20.8-26.0 s (corridas 1-2). Aqui 16.84 s. Lateral en la llegada -2.9 mm (antes -0.4..-1.5 mm).",
+  "interpretacion": "Hecho: DONE con el perfil rapido; salida limpia; is_docked true despues. Ahorro ~4-9 s al primer true. Lateral de llegada algo mayor (~3 mm), muy dentro de la tolerancia de is_docked.",
+  "carga_fisica": "pendiente de confirmacion del operador"
+}

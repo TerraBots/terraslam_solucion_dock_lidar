@@ -179,8 +179,8 @@ rápido, vale la pena el perfil de abajo, pero solo después de validarlo.
 
 Subir `v_max` casi no cambia nada: el tramo fino domina.
 
-**Perfil rápido candidato (NO validado en el robot)**, solo con argumentos
-del launch, sin tocar el código:
+**Perfil rápido candidato (validación en curso: 1 de 5 corridas)**, solo
+con argumentos del launch, sin tocar el código:
 
 ```bash
 ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
@@ -194,6 +194,16 @@ antes de la rampa, y más distorsión del scan al girar a 0,5 rad/s. **Usarlo
 solo si en una reserva previa acopla en al menos 5 corridas seguidas**,
 incluyendo de espaldas y lejos, con la misma precisión. Si no hay reserva
 para validarlo, usar la configuración de entrega.
+
+Estado al 2026-11-03: una corrida completa, frontal, con primer `true` a los
+16,8 s (frente a 20,8–26,0 s con la configuración de entrega) y lateral de
+llegada de 2,9 mm. Otros dos intentos se cortaron por la conexión. Las
+pruebas que faltan están en la [bitácora](docs/BITACORA_RBOT.md#pruebas-pendientes-para-la-próxima-reserva).
+
+**Margen ante cortes de red:** en una red inestable conviene añadir
+`data_gap_hold_s:=10.0` (máximo permitido): el robot espera quieto hasta 10 s
+en vez de 5 antes de dar la corrida por perdida. El 2026-11-03 hubo un corte
+de 8 s.
 
 ## RBOT físico: ajuste de la fase final
 

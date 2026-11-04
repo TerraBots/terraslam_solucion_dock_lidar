@@ -1,0 +1,15 @@
+[INFO] [1793769768.113097574] [dock_lidar]: dock_lidar listo | /scan -> /cmd_vel a 20 Hz | v_max 0.18 m/s, w_max 0.50 rad/s, v_fine 0.070, v_dock 0.035 | range_sigma 0.010 m
+[INFO] [1793769768.113484936] [dock_lidar]: fase final | d_floor=0.231 m seat_min_distance=0.230 m | pulsos=0 de 3.0 mm | espera=2.0 s confirmacion=2.0 s | barrido=+-6.0 deg
+[WARN] [1793769768.137739519] [dock_lidar]: esperando datos: TF de odometria ausente o antiguo
+[WARN] [1793769769.837571337] [dock_lidar]: esperando datos: LiDAR ausente o antiguo
+[INFO] [1793769769.889071749] [dock_lidar]: LiDAR, TF y dock_status disponibles, arrancando
+[INFO] [1793769772.993137798] [dock_lidar]: [  3.10s] SEARCH -> APPROACH
+[DEBUG] [1793769772.993678375] [dock_lidar]: d=0.990 e=+17.8mm head=+144.87deg L=0.26 v=0.180
+[DEBUG] [1793769773.538078056] [dock_lidar]: d=0.992 e=+20.2mm head=+132.60deg L=0.26 v=0.180
+[DEBUG] [1793769774.087513098] [dock_lidar]: d=0.994 e=+24.4mm head=+117.68deg L=0.26 v=0.180
+[DEBUG] [1793769774.603711205] [dock_lidar]: d=0.995 e=+27.4mm head=+103.53deg L=0.26 v=0.180
+[DEBUG] [1793769775.137661954] [dock_lidar]: d=0.996 e=+28.4mm head=+87.98deg L=0.26 v=0.180
+[DEBUG] [1793769775.637980115] [dock_lidar]: d=0.996 e=+28.4mm head=+87.98deg L=0.26 v=0.180
+[WARN] [1793769775.687745760] [dock_lidar]: datos interrumpidos: TF de odometria ausente o antiguo; espero quieto hasta 10.0 s
+[ERROR] [1793769785.687965134] [dock_lidar]: PARADA: TF de odometria ausente o antiguo durante mas de 10.0 s. Relanza para otra corrida.
+[INFO] [1793769785.688532095] [dock_lidar]: [ 15.80s] APPROACH -> STOPPED

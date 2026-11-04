@@ -1,0 +1,12 @@
+{
+  "fecha": "2026-11-03T23:22:45",
+  "autorizacion": "Patrick: 'Si dale y ya esta a espaldas a 1m' (una corrida, perfil rapido 2/5 repetida, con data_gap_hold_s=10)",
+  "args": "PERFIL RAPIDO + data_gap_hold_s:=10.0",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial": "de espaldas a ~1 m; pose_check 0/10 detecciones (sector trasero tapado); nada a menos de 0.6 m. Primera telemetria: d=0.990 m, lateral +17.8 mm, head_err +144.9 deg.",
+  "transiciones_s": {"SEARCH->APPROACH": 3.10, "APPROACH->STOPPED": 15.80},
+  "eventos": ["5.8 s: 'datos interrumpidos: TF de odometria ausente o antiguo; espero quieto hasta 10.0 s'", "15.8 s: PARADA por TF ausente > 10 s"],
+  "datos": "observer.py: /odom y /scan dejan de llegar a la vez a los ~8 s del observador y no vuelven (152 odom, 80 scans en toda la corrida). Despues de la corrida, /odom y /scan siguen sin llegar (23:23:32): corte total de la conexion robot->PC.",
+  "interpretacion": "Hecho: corte total de datos del robot, no del nodo ni del perfil. La espera de 10 s funciono (ceros); los datos no volvieron. Prueba del perfil sin resultado.",
+  "resultado": "STOPPED por corte total de la conexion (sin docking)"
+}

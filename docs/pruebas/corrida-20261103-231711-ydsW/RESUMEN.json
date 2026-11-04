@@ -1,0 +1,22 @@
+{
+  "fecha": "2026-11-03T23:17:11",
+  "autorizacion": "Patrick: 'ya ta' tras colocar el robot de espaldas (una corrida, perfil rapido 2/5)",
+  "args": "PERFIL RAPIDO: v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18",
+  "sha256_dock_lidar_py": "220dd3cc7e6fe205547b475d4c3baaf9e09d073174c8ebc68cdbd877526360af",
+  "pose_inicial_pose_check": {"d_m": 1.027, "lateral_mm": 115.8, "rumbo_respecto_normal_deg": -169.70, "detecciones": "10/10"},
+  "transiciones_s": {"SEARCH->APPROACH": 1.01, "APPROACH->DOCK": 12.80, "DOCK->WAIT_DOCK": 19.75, "WAIT_DOCK->SWEEP": 21.80, "SWEEP->STOPPED": 30.80},
+  "eventos": [
+    "16.65 s: dock_status antiguo; espera quieto; recuperado a los 0.5 s (sigue en DOCK)",
+    "25.8 s: LiDAR ausente; espera quieto 5 s; no vuelve -> STOPPED"
+  ],
+  "llegada_wait_dock": {"d_m": 0.2321, "lateral_mm": -1.9, "head_err_deg": 1.5, "is_docked": false},
+  "barrido": [
+    {"objetivo": "2/8 -1.5", "rumbo_previo_deg": 1.5, "pulso_s": 0.18, "rumbo_tras_pausa_deg": 0.4},
+    {"objetivo": "2/8 -1.5 (intento 2)", "rumbo_previo_deg": 0.4, "pulso_s": 0.11, "rumbo_tras_pausa_deg": -2.5, "nota": "sin true en -2.5 tras 1.35 s quieto"},
+    {"objetivo": "2/8 -1.5 (intento 3)", "rumbo_previo_deg": -2.5, "pulso_s": 0.10, "nota": "luego corte del LiDAR"}
+  ],
+  "datos": "observer.py: hueco de 8.06 s en /scan (t=29.36 del observador); /odom sin huecos relevantes; /dock_status sin true. Despues de la corrida /scan a 10 Hz, edad 0.28 s.",
+  "comparacion": "Configuracion de entrega desde de espaldas ~0.93 m (corrida 4): WAIT_DOCK a 22.4 s. Aqui 19.75 s pese a 0.5 s de espera por dato antiguo.",
+  "interpretacion": "Hecho: la aproximacion rapida llego bien (lateral -1.9 mm); la corrida termino por un corte de scans de 8 s (mayor que data_gap_hold_s=5), ajeno al perfil. Prueba del perfil sin resultado: repetir.",
+  "resultado": "STOPPED en SWEEP por corte de LiDAR > 5 s (sin docking)"
+}

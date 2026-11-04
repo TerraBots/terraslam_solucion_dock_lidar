@@ -325,6 +325,66 @@ Pendiente: ejercitar en el robot el retorno al rumbo de un true fugaz;
 validar (o descartar) el perfil rápido descrito en el README antes de la final
 si la final ordena por tiempo.
 
+## Sesión 2026-11-03 (23:01–23:24) — perfil rápido (interrumpida por la red)
+
+Reserva nueva. Al conectar, los tópicos aparecían pero no llegaban datos
+durante unos minutos; después llegaron con edades de 0,18–0,28 s (más que el
+día anterior, ~0,1 s). Se empezó a validar el perfil rápido del README:
+`v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4
+v_max:=0.18` (el resto, defaults).
+
+| Corrida | Salida | Resultado |
+|---|---|---|
+| `corrida-20261103-231424-11Yq` | frontal: 0,99 m · +11 mm · −2° | **true 16,8 · DONE 19,9 s**; llegada 0,238 m, lateral −2,9 mm, +1,8° |
+| `corrida-20261103-231711-ydsW` | de espaldas: 1,03 m · +116 mm · −170° | WAIT_DOCK a 19,8 s (lateral −1,9 mm); en SWEEP, **corte de scans de 8,06 s** > 5 s → STOPPED |
+| `corrida-20261103-232245-eXDa` | de espaldas, ~1 m (0/10 detecciones al salir), con `data_gap_hold_s:=10.0` | **corte total de la conexión** (odom y scans) a los 5,8 s; no volvió en 10 s → STOPPED; seguía caída al terminar la reserva |
+
+Hechos: la única corrida completa del perfil rápido ganó ~4–9 s al primer
+true respecto a la configuración de entrega desde la misma pose (20,8–26,0 s),
+con un lateral de llegada algo mayor (2,9 mm frente a 0,4–1,5 mm). Durante el
+corte de 8 s el nodo publicó 157 comandos, todos cero, y la odometría no
+registró desplazamiento. Las dos paradas se deben a la conexión, no al perfil.
+
+## Pruebas pendientes (para la próxima reserva)
+
+Siempre una corrida por autorización, verificando antes la pose solo con
+lectura (`pose_check.py`, `scan_sectors.py`, `/dock_status`). Comprobar al
+conectar que los datos llegan (`age.py`): hoy la conexión tardó en entregar
+datos y se cortó dos veces.
+
+**1. Terminar de validar el perfil rápido (faltan 4 corridas completas).**
+
+```bash
+~/sim_ws/dev_tools/rbot/run_trial.sh v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 \
+  w_max:=0.5 w_search:=0.4 v_max:=0.18 data_gap_hold_s:=10.0
+```
+
+| Prueba | Pose | Referencia con la configuración de entrega (primer true) | Estado |
+|---|---|---|---|
+| R1 | frontal, ~1 m | 20,8–26,0 s (corridas 1–2) | ✅ 16,8 s |
+| R2 | de espaldas, ~1 m | 28,0 s (corrida 4) | ⏳ 2 intentos cortados por la red |
+| R3 | lejos de espaldas, junto a la banca (~1,6 m, ≤0,9 m a un lado) | 36,9 s (corrida 14) | ⏳ |
+| R4 | costado, ~1 m y 40–75 cm a un lado, paralelo a la pared | 25,6–27,0 s (corridas 3 y 5) | ⏳ |
+| R5 | cercana y oblicua (~0,7 m de la pared, ~0,9 m a un lado) | 34,0 s (corrida 15) | ⏳ |
+
+Criterio para adoptarlo: **5 de 5 DONE**, lateral de llegada ≤ 3 mm y rumbo
+dentro de ±3°, sin oscilaciones ni re-búsquedas extra respecto a la
+referencia. Una sola corrida fallida por el perfil (no por la red) lo
+descarta para la final. Si se adopta, decidir con Patrick si pasa a ser el
+default (nodo + launch + tests) o se usa como argumentos del launch.
+
+**2. Margen ante cortes de datos: decidir `data_gap_hold_s`.** El default es
+5 s. Hoy hubo un corte de 8 s que 10 s habría salvado; la espera es segura
+(ceros comprobados). Pendiente: decisión de Patrick entre pasarlo como
+argumento (`data_gap_hold_s:=10.0`) o cambiar el default a 10 s.
+
+**3. Retorno al rumbo de un true fugaz.** Implementado y con tests; aún no
+ocurrió en el robot. No requiere una prueba dedicada: registrar si aparece.
+
+**4. Fuera del robot:** confirmar con los organizadores cómo se puntúa el
+tiempo en la final (si basta ≤45 s o se ordena por el más rápido). Eso
+decide si el perfil rápido vale la pena.
+
 ## Próxima reserva: validar SWEEP (ejecutado el 2026-11-02 23:07, ver arriba)
 
 1. Conectar la reserva y verificar sin movimiento con

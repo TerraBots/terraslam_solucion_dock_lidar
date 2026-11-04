@@ -1,0 +1,4 @@
+1793769433.3960071 [INFO] [launch]: All log files can be found below /home/patrick/sim_ws/src/terraslam_solucion_dock_lidar/docs/pruebas/corrida-20261103-231711-ydsW/ros/2026-11-03-23-17-13-394930-lab-kalman-162564
+1793769433.3961658 [INFO] [launch]: Default logging verbosity is set to INFO
+1793769433.4522004 [INFO] [dock_lidar-1]: process started with pid [162609]
+1793769474.9638484 [INFO] [dock_lidar-1]: process has finished cleanly [pid 162609]
