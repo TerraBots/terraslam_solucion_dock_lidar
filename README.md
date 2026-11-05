@@ -112,57 +112,99 @@ Pendiente de ejercitar en el robot: el retorno al rumbo de un `true` fugaz
 
 ## En la competencia
 
-### Qué ejecutar
+Guía paso a paso para el día de la final. Hay **dos comandos de corrida**:
 
-**Elección del equipo para la final: el perfil rápido** (validado 5 de 5 en
-el RBOT, primer `true` a 22,6 s de media), con 10 s de margen ante cortes de
-red:
+| Comando | Para qué | Validación en el RBOT |
+|---|---|---|
+| **Rápido** (principal) | Es el que se usa en la final | 5 de 5 acopladas, primer `true` a 22,6 s de media |
+| **Modo seguro** (respaldo) | Solo si el rápido falla en la práctica por cómo se mueve el robot | 8 de 8 dentro del rango del jurado, ~30 s de media |
+
+Los dos llevan `data_gap_hold_s:=10.0`: si se corta la red, el robot espera
+quieto hasta 10 s y sigue si los datos vuelven.
+
+### Paso 0 — En cada terminal nueva
 
 ```bash
 source /opt/ros/humble/setup.bash
 source ~/sim_ws/install/setup.bash
+```
+
+Si el robot se conecta como en las reservas de Kalman, ejecutar antes su
+comando de conexión (crea `/var/lib/kalman/cyclonedds.xml`).
+
+### Paso 1 — Comprobar que todo llega (no mueve el robot)
+
+```bash
+ros2 topic hz /scan          # ≈ 10 Hz; Ctrl-C para salir
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py dry_run:=true
+```
+
+El segundo comando es un arranque **sin movimiento**: todas las velocidades
+son cero. Tiene que mostrar `barrido=+-6.0 deg` y `LiDAR, TF y dock_status
+disponibles, arrancando`. Cerrar con Ctrl-C. Si se queda en `esperando datos`,
+el problema es la conexión (o los relojes: el nodo descarta mensajes con más
+de 0,75 s de antigüedad), no el código.
+
+### Paso 2 — Corrida de práctica con el rápido (si la organización lo permite)
+
+```bash
 ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
   v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18 \
   data_gap_hold_s:=10.0
 ```
 
-Alternativa de respaldo, la configuración de entrega (8 de 8 dentro del rango
-del jurado, ~30 s de media):
+Esperar `CONFIRM -> DONE` y cerrar con Ctrl-C. Según el resultado:
+
+| Resultado de la práctica | Qué usar en las corridas del jurado |
+|---|---|
+| ✅ Termina en `CONFIRM -> DONE` | **El rápido** |
+| ❌ Falla por cómo se mueve el robot (se pasa, choca, no se centra, barrido sin contacto) | **El modo seguro** (Paso 3B) |
+| ❌ Falla por la red (`... durante mas de 10.0 s`, `esperando datos`) | **No cambiar de perfil**: el modo seguro tampoco lo arregla. Revisar la conexión y repetir la práctica con el rápido |
+
+Si no hay práctica, usar directamente el rápido.
+
+### Paso 3 — Corridas del jurado
+
+**3A. Rápido (principal):**
+
+```bash
+ros2 launch terraslam_solucion_dock_lidar solucion.launch.py \
+  v_fine:=0.07 d_fine:=0.60 dock_wait_s:=2.0 w_max:=0.5 w_search:=0.4 v_max:=0.18 \
+  data_gap_hold_s:=10.0
+```
+
+**3B. Modo seguro (respaldo, solo si el Paso 2 lo indica):**
 
 ```bash
 ros2 launch terraslam_solucion_dock_lidar solucion.launch.py data_gap_hold_s:=10.0
 ```
 
-Usar el mismo perfil en las 3 corridas de una ronda.
+En cada corrida:
 
-Antes de la primera corrida:
+1. El jurado coloca el robot. Lanzar el comando elegido y **no tocar nada**.
+2. Esperar `CONFIRM -> DONE` en la terminal (con el rápido, 17–28 s al primer
+   `true`; con el modo seguro, 21–39 s). En DONE el robot se queda quieto.
+3. Cerrar con **Ctrl-C** y volver a lanzar el **mismo** comando para la
+   siguiente corrida: cada corrida empieza de cero.
 
-1. `colcon build --packages-select terraslam_solucion_dock_lidar` y las
-   pruebas sin robot (`python3 -m pytest -q test`): deben pasar las 98.
-2. Comprobar que llegan `/scan`, `/odom`, `/tf` y `/dock_status`
-   (`ros2 topic hz /scan` ≈ 10 Hz) y que los relojes del PC y del robot están
-   sincronizados: el nodo descarta mensajes con sellos de más de 0,75 s.
-3. Un arranque sin movimiento:
-   `ros2 launch terraslam_solucion_dock_lidar solucion.launch.py dry_run:=true`.
-   Debe mostrar `LiDAR, TF y dock_status disponibles, arrancando` y
-   `barrido=+-6.0 deg`. Cerrar con Ctrl-C.
+Usar **el mismo comando en las 3 corridas**; no alternar entre rápido y modo
+seguro dentro de una ronda. Consejo: tener los dos comandos copiados en un
+archivo de texto y pegarlos desde ahí, para no equivocarse al escribirlos.
 
-En cada corrida del jurado:
+### Si una corrida termina en `STOPPED`
 
-1. El jurado coloca el robot. Lanzar el comando de arriba y no tocar nada.
-2. Esperar `CONFIRM -> DONE` (en el RBOT, 21–39 s al primer `true` dentro
-   del rango). El nodo mantiene ceros en DONE; cerrar con Ctrl-C.
-3. Relanzar el proceso para la siguiente corrida: cada corrida empieza de
-   cero, sin estado previo.
-
-Si termina en `STOPPED`, el log dice por qué:
+La terminal dice el motivo:
 
 | Mensaje | Causa probable | Qué hacer |
 |---|---|---|
-| `... durante mas de 5.0 s` (odometría, LiDAR o dock_status) | Corte de red más largo que la espera | Revisar la conexión y relanzar |
+| `... durante mas de 10.0 s` (odometría, LiDAR o dock_status) | Corte de red más largo que la espera | Revisar la conexión y relanzar |
 | `marcador perdido durante demasiado tiempo` | Cajas perdidas cerca del dock o tras 3 re-búsquedas | Relanzar |
 | `barrido de rumbo ... sin contacto` | Llegó al contacto sin `is_docked` en ±6° | Revisar que el dock no esté desplazado; relanzar |
 | `esperando datos` al arrancar (15 s) | Falta algún tópico o la configuración DDS | Revisar la conexión antes de lanzar |
+
+Preparación previa en el PC (antes del día, no en la competencia):
+`colcon build --packages-select terraslam_solucion_dock_lidar` y las pruebas
+sin robot (`python3 -m pytest -q test`): deben pasar las 98.
 
 ### Tiempo y velocidad
 
